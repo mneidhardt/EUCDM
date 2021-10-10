@@ -32,6 +32,9 @@ def insertStatementsDE(dedict, delist):
 filename = sys.argv[1]          # File containing the data elements (I use a dump of CW's Excel file).
 bs = BaseStructures()
 dd = bs.constructDict2(filename)
-dd[1615]
 g = Graph([], [])
-g.showGraph2(dd[1615])
+
+for k in dd:
+    g.showGraph2(dd[k])
+
+print(len(dd.keys()), ' keys on level 1.')
