@@ -27,17 +27,26 @@ class Node():
         self.children.append(node)
 
 class Graph():
-    def __init__(self, data, detable):
+    def __init__(self, data, detable, dict2, bs):
         self.count = 0
-        self.data = data # The source list of relations that we convert to a tree graph.
+        self.data = data        # The source list of relations that we convert to a tree graph.
         self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
-        self.graph = Node()  # The resulting tree graph. Initially empty.
+        self.dict2 = dict2      # A dict with all top elements as keys, and a graph of their subelements as value.
+        self.graph = Node()     # The resulting tree graph. Initially empty.
+        self.bs = bs            # An instance of BaseStructures.
         
     def buildGraph(self, parent):
         for row in self.data:
             if row[0] == parent.getData():
                 kid = Node()
                 kid.setData(row[1])
+
+                denumber = self.detable[row[1]][0]
+                prefix1 = self.bs.getPrefix1(denumber)
+                if prefix1 in self.dict2:
+                    print(prefix1, ' in dict2. ')
+                    self.showGraph2(self.dict2[prefix1])
+                    # kid.addChild(self.dict2[prefix1])
                 parent.addChild(kid)
                 self.buildGraph(kid)
                 
