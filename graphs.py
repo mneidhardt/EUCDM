@@ -2,17 +2,32 @@ import json
 import sys
 import re
 
+# Node class for EUCDM Data Elements. Each such Data Element has a Data Element number,
+# called DENumber or DENo.
+# These data elements are organised in levels/groups like this:
+# Top level, L1, has this form: 19 08 000 000
+# Level 2, L2, has this form:   19 08 021 000
+# Level 3, L3, has this form:   19 08 021 001
+# I.e. the last two 3-digit groups can be either zero or non-zero.
+# Each level therefore has a shorter key, with the DE number converted to integer, and 
+# one or both zero groups discarded. I.e.:
+# L1 has key of the form: zxyv
+# L2 has key of the form: zxyvabc
+# L3 has key of the form: zxyvabcdef
+#--------------------------------------------------
 class Node():
-    def __init__(self):
-        self.data = None
+    def __init__(self, key, denumber, cardinality=0):
+        self.key = key              # This is the DENumber as integer, and adapted to the level.
+        self.denumber = denumber    # This is the full DE number, i.e. xx yy zzz æøå
         self.parent = None
         self.children = []
+        self.cardinality = cardinality
+        
+    def getKey(self):
+        return self.key
      
-    def getData(self):
-        return self.data
-
-    def setData(self, content):
-        self.data = content
+    def getDENumber(self):
+        return self.denumber
 
     def getParent(self):
         return self.parent
@@ -26,49 +41,30 @@ class Node():
     def addChild(self, node):
         self.children.append(node)
 
+    def setCardinality(self, value):
+        self.cardinality = value
+
+    def getCardinality(self):
+        return self.cardinality
+
 class Graph():
-    def __init__(self, data, detable, dict2, bs):
+    def __init__(self, relations):
         self.count = 0
-        self.data = data        # The source list of relations that we convert to a tree graph.
-        self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
-        self.dict2 = dict2      # A dict with all top elements as keys, and a graph of their subelements as value.
-        self.graph = Node()     # The resulting tree graph. Initially empty.
-        self.bs = bs            # An instance of BaseStructures.
+        self.relations = relations    # The source list of relations that we convert to a tree graph.
+        self.subgraphs = {}         # Dict from basestructures, i.e. all L1 elements and their offspring.
+        #self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
+        #self.dict2 = dict2      # A dict with all top elements as keys, and a graph of their subelements as value.
+        #self.graph = Node()     # The resulting tree graph. Initially empty.
+        #self.bs = bs            # An instance of BaseStructures.
+        
+    def setSubgraphs(self, subgraphs):
+        self.subgraphs = subgraphs
         
     def buildGraph(self, parent):
-        for row in self.data:
-            if row[0] == parent.getData():
-                kid = Node()
-                kid.setData(row[1])
-
-                denumber = self.detable[row[1]][0]
-                prefix1 = self.bs.getPrefix1(denumber)
-                if prefix1 in self.dict2:
-                    print(prefix1, ' in dict2. ')
-                    self.showGraph2(self.dict2[prefix1])
-                    # kid.addChild(self.dict2[prefix1])
+        for row in self.relations:
+            if row[0] == parent.getKey():
+                kid = Node(row[1], None, row[2])
                 parent.addChild(kid)
+                if kid.getKey() in self.subgraphs:
+                    kid.addChild(self.subgraphs[kid.getKey()])
                 self.buildGraph(kid)
-                
-    def showGraph(self, node, indent=''):
-        id = node.getData()
-        denumber = self.detable[id][0]
-        dename = self.detable[id][2]
-        print(indent, id, denumber)
-        
-        for kid in node.getChildren():
-            self.showGraph(kid, indent+'  ')
-
-    # This shows any graph constructed of Nodes, without using detable.
-    def showGraph2(self, node, indent=''):
-        print(indent, node.getData())
-        
-        for kid in node.getChildren():
-            self.showGraph2(kid, indent+'  ')
-
-    # This takes a list as made by BaseStructures.constructList,
-    # and builds all the little graphs with root XX ZZ 000 000.
-    def buildParts(self, delist):
-        result = {}
-        for x in range(1,100):
-            continue # Will get back to this...

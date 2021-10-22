@@ -3,62 +3,45 @@ from graphs import Graph
 from graphs import Node
 import sys
 
-def printDETable(filename):
-    bs = BaseStructures()
-    det = bs.constructDict(filename)
-    for k in det:
-        print(k, ' > ', det[k])
+class EUCDMBuilder():
+    def showGraph(self, node, indent=''):
+        print(indent, node.getKey(), node.getCardinality())
+            
+        for kid in node.getChildren():
+            self.showGraph(kid, indent+'    ')
 
-def printDict2(filename):
-    bs = BaseStructures()
-    dd = bs.constructDict2(filename)
-    g = Graph([], [], dd, bs)
+    def printList(self, filename):
+        bs = BaseStructures()
+        det = bs.constructDict(filename)
+        list = bs.constructList(det)
+        for k in list:
+            print(k, ' = ', list[k])
 
-    for k in dd:
-        g.showGraph2(dd[k])
+    def printDETable(self, filename):
+        bs = BaseStructures()
+        det = bs.constructDict(filename)
+        for k in det:
+            print(k, ' > ', det[k])
 
-    print(len(dd.keys()), ' keys on level 1.')
+    def doGraf(self, filename, relfilename):
+        bs = BaseStructures()
+        subgraphs = bs.constructDict2(filename, Node)        
+        relations = bs.getRelations(relfilename)
 
-def getRelations():
-    # Testdata: [parentID, childID, cardinality].
-    # Define the relation table here.
-    # Link parent to child node, with cardinality.
-    relation = []
-    relation.append([100,164,1])
-    relation.append([100,107,1])
-    relation.append([100,109,1])
-    relation.append([100,373,1])
-    relation.append([100,249,1])
-    relation.append([100,171,1])
-    relation.append([100,405,1])
-    relation.append([100,229,1])
+        mygraf = Graph(relations)
+        mygraf.setSubgraphs(subgraphs)
+        root = Node(-1, None)
+        mygraf.buildGraph(root)
+        self.showGraph(root)
+        
+    def insertStatementsDE(self, dedict, delist):
+        for r in delist:
+            txt = dedict[r[4]][0]
+            print("insert into dataelement (denum, denum1, denum2, denum3, denum4, key) values ('" + txt + "',", r[0],',', r[1],',', r[2],',', r[3],',',  r[4], ");");
 
-    return relation
-
-def buildGraph(filename):
-    bs = BaseStructures()
-    DETable = bs.constructDict(filename)
-    dict2 = bs.constructDict2(filename)
-    mygraf = Graph(getRelations(), DETable, dict2, bs)
-    root = Node()
-    root.setData(100)
-    mygraf.buildGraph(root)
-    mygraf.showGraph(root)
-
-def insertStatementsDE(dedict, delist):
-    for r in delist:
-        txt = dedict[r[4]][0]
-        print("insert into dataelement (denum, denum1, denum2, denum3, denum4, key) values ('" + txt + "',", r[0],',', r[1],',', r[2],',', r[3],',',  r[4], ");");
 
 filename = sys.argv[1]          # File containing the data elements (I use a dump of CW's Excel file).
-
-if sys.argv[2] == 'detable':
-    printDETable(filename)
-elif sys.argv[2] == 'dict2':
-    printDict2(filename)
-elif sys.argv[2] == 'graf':
-    buildGraph(filename)
-else:
-    print('No cmd.')
-
+relfilename = sys.argv[2] # Name of file containing relations.
+builder = EUCDMBuilder()
+builder.doGraf(filename, relfilename)
 
