@@ -65,7 +65,7 @@ class BaseStructures():
     # Reads CSV file with relations for toplevel DataElements.
     # Format is:
     # parent, child, cardinality, h1,h2,h3,h4,h5,h6,h7,i1,i2
-    # The last columns has 'a', 'b', 'c' or '-', meaning mandatory, optional, optional for ms or N/A.
+    # The h1-h7,i1-i2 columns have 'a', 'b', 'c' or '-', meaning 'a'=mandatory, 'b'=optional, 'c'=optional for ms, '-'=N/A.
     def getRelations(self, filename):
         relations = []
         
