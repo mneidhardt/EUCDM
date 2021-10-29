@@ -50,6 +50,7 @@ class Node():
 class Graph():
     def __init__(self, relations):
         self.count = 0
+        self.schema = {}
         self.relations = relations    # The source list of relations that we convert to a tree graph.
         self.subgraphs = {}         # Dict from basestructures, i.e. all L1 elements and their offspring.
         #self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
@@ -57,6 +58,12 @@ class Graph():
         #self.graph = Node()     # The resulting tree graph. Initially empty.
         #self.bs = bs            # An instance of BaseStructures.
         
+    def showGraph(self, node, indent=''):
+        print(indent, node.getKey())
+            
+        for kid in node.getChildren():
+            self.showGraph(kid, indent+'    ')
+
     def setSubgraphs(self, subgraphs):
         self.subgraphs = subgraphs
         
@@ -68,3 +75,49 @@ class Graph():
                 if kid.getKey() in self.subgraphs:
                     kid.addChild(self.subgraphs[kid.getKey()])
                 self.buildGraph(kid)
+
+    def buildGraph2(self, parent):
+        for row in self.relations:
+            if row[0] == parent.getKey():
+                kid = Node(row[1], None, row[2])
+                parent.addChild(kid)
+                self.buildGraph(kid)
+
+    # find bfs traversal from starting vertex
+    def bfs(self, vertex):
+        visitedSet = set()
+        queue = []
+        visitedSet.add(vertex)
+        queue.append(vertex)
+        
+        result = []
+        while queue:
+            v = queue[0]
+            result.append(v.getKey())
+            queue = queue[1:]
+            for kid in v.getChildren():
+                if kid not in visitedSet:
+                    visitedSet.add(kid)
+                    queue.append(kid)
+        return result
+
+    # find bfs traversal from starting vertex
+    def bfs2(self, vertex):
+        visitedSet = set()
+        queue = []
+        visitedSet.add(vertex)
+        queue.append(vertex)
+        
+        result = {}
+        while queue:
+            v = queue[0]
+            result[v.getKey()] = {}
+            if v.getCardinality() > 1:
+                result[v.getKey()]["type"] = "array"
+            queue = queue[1:]
+            for kid in v.getChildren():
+                if kid not in visitedSet:
+                    result[v.getKey()][kid.getKey()] = { 'type' : 'object' }
+                    visitedSet.add(kid)
+                    queue.append(kid)
+        return result

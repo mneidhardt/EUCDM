@@ -23,13 +23,22 @@ class EUCDMBuilder():
         for k in det:
             print(k, ' > ', det[k])
 
-    def doGraf(self, filename, relfilename):
+    def doGrafWithSubgraphs(self, filename, relfilename):
         bs = BaseStructures()
         subgraphs = bs.constructDict2(filename, Node)        
         relations = bs.getRelations(relfilename)
 
         mygraf = Graph(relations)
         mygraf.setSubgraphs(subgraphs)
+        root = Node(-1, None)
+        mygraf.buildGraph(root)
+        self.showGraph(root)
+        
+    def doGraf(self, filename, relfilename):
+        bs = BaseStructures()
+        relations = bs.getRelations(relfilename)
+
+        mygraf = Graph(relations)
         root = Node(-1, None)
         mygraf.buildGraph(root)
         self.showGraph(root)
