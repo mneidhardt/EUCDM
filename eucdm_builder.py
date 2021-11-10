@@ -34,14 +34,16 @@ class EUCDMBuilder():
         mygraf.buildGraph(root)
         self.showGraph(root)
         
-    def doGraf(self, filename, relfilename):
+    def doGraf(self, relfilename):
         bs = BaseStructures()
         relations = bs.getRelations(relfilename)
 
         mygraf = Graph(relations)
         root = Node(-1, None)
-        mygraf.buildGraph(root)
+        mygraf.buildGraph2(root)
         self.showGraph(root)
+        #bfslist = mygraf.bfs(root)
+        #print(bfslist)
         
     def insertStatementsDE(self, dedict, delist):
         for r in delist:
@@ -52,5 +54,6 @@ class EUCDMBuilder():
 filename = sys.argv[1]          # File containing the data elements (I use a dump of CW's Excel file).
 relfilename = sys.argv[2] # Name of file containing relations.
 builder = EUCDMBuilder()
-builder.doGraf(filename, relfilename)
+# builder.doGrafWithSubgraphs(filename, relfilename)
+builder.doGraf(relfilename)
 

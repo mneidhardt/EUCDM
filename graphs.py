@@ -64,9 +64,11 @@ class Graph():
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
 
+    # Injects the list of subgraphs from constructDict2. See basestructures.
     def setSubgraphs(self, subgraphs):
         self.subgraphs = subgraphs
         
+    # Adds subgraphs to what is constructed from relations.
     def buildGraph(self, parent):
         for row in self.relations:
             if row[0] == parent.getKey():
@@ -101,7 +103,7 @@ class Graph():
                     queue.append(kid)
         return result
 
-    # find bfs traversal from starting vertex
+    # Build json schema using BFS.
     def bfs2(self, vertex):
         visitedSet = set()
         queue = []
