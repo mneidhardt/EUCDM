@@ -16,12 +16,14 @@ import re
 # L3 has key of the form: zxyvabcdef
 #--------------------------------------------------
 class Node():
-    def __init__(self, key, denumber, cardinality=0):
+    def __init__(self, key, denumber, cardinality, type, format):
         self.key = key              # This is the DENumber as integer, and adapted to the level.
         self.denumber = denumber    # This is the full DE number, i.e. xx yy zzz æøå
+        self.cardinality = cardinality # Cardinality of this node in relation to its parent.
+        self.type = type                # object, array or ???
+        self.format = format            # an..XY or similar, as in EUCDM.
         self.parent = None
         self.children = []
-        self.cardinality = cardinality
         
     def getKey(self):
         return self.key
@@ -41,18 +43,20 @@ class Node():
     def addChild(self, node):
         self.children.append(node)
 
-    def setCardinality(self, value):
-        self.cardinality = value
-
     def getCardinality(self):
         return self.cardinality
+
+    def getType(self):
+        return self.type
+
+    def getFormat(self):
+        return self.format
 
 class Graph():
     def __init__(self, relations):
         self.count = 0
         self.schema = {}
         self.relations = relations    # The source list of relations that we convert to a tree graph.
-        self.subgraphs = {}         # Dict from basestructures, i.e. all L1 elements and their offspring.
         #self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
         #self.dict2 = dict2      # A dict with all top elements as keys, and a graph of their subelements as value.
         #self.graph = Node()     # The resulting tree graph. Initially empty.
@@ -64,24 +68,10 @@ class Graph():
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
 
-    # Injects the list of subgraphs from constructDict2. See basestructures.
-    def setSubgraphs(self, subgraphs):
-        self.subgraphs = subgraphs
-        
-    # Adds subgraphs to what is constructed from relations.
     def buildGraph(self, parent):
         for row in self.relations:
             if row[0] == parent.getKey():
-                kid = Node(row[1], None, row[2])
-                parent.addChild(kid)
-                if kid.getKey() in self.subgraphs:
-                    kid.addChild(self.subgraphs[kid.getKey()])
-                self.buildGraph(kid)
-
-    def buildGraph2(self, parent):
-        for row in self.relations:
-            if row[0] == parent.getKey():
-                kid = Node(row[1], None, row[2])
+                kid = Node(row[1], None, row[2], row[3], row[4])
                 parent.addChild(kid)
                 self.buildGraph(kid)
 

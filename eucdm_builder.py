@@ -5,10 +5,20 @@ import sys
 
 class EUCDMBuilder():
     def showGraph(self, node, indent=''):
-        print(indent, node.getKey(), node.getCardinality())
+        print(indent, node.getKey()) # ,'(', node.getCardinality(), node.getType(), node.getFormat(), ')')
+
+        if node.getType() == 'array':
+            print(indent, '[')
+        elif node.getType() == 'object':
+            print(indent, '{')
             
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
+
+        if node.getType() == 'array':
+            print(indent, ']')
+        elif node.getType() == 'object':
+            print(indent, '}')
 
     def printList(self, filename):
         bs = BaseStructures()
@@ -30,7 +40,7 @@ class EUCDMBuilder():
 
         mygraf = Graph(relations)
         mygraf.setSubgraphs(subgraphs)
-        root = Node(-1, None)
+        root = Node(-1, None, 1, 'object', None)
         mygraf.buildGraph(root)
         self.showGraph(root)
         
@@ -39,8 +49,8 @@ class EUCDMBuilder():
         relations = bs.getRelations(relfilename)
 
         mygraf = Graph(relations)
-        root = Node(-1, None)
-        mygraf.buildGraph2(root)
+        root = Node(-1, None, 1, 'object', None)
+        mygraf.buildGraph(root)
         self.showGraph(root)
         #bfslist = mygraf.bfs(root)
         #print(bfslist)

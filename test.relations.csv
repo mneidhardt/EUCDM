@@ -1,0 +1,25 @@
+# Manuelt dannet graf over relationer i H1-H7 og I1 og I2.
+# Dækker kun toplevel DE; dvs hvor de sidste 6 cifre = 0.
+# D=-1, -6=GS, -7=SI.
+#parent; child; cardinality; type; format; h1;h2;h3;h4;h5;h6;h7;i1;i2
+# Type in this context is one of these: [object, array, an..nn]
+# format in this context is what EUCDM says, e.g. 'an..35'.
+-1; 1209; 1;                object;;  -;-;-;-;-;-;-;-;-
+1209; 1209001; 1;           ;an..22;  a;a;a;a;a;a;a;a;a
+-1; -6; 1;                  object;;  -;-;-;-;-;-;-;-;-
+-6; 1203; 99;               object;;  a;a;a;a;a;a;a;a;-
+1203; 1203001; 1;           ;an..70;  a;a;a;a;a;a;a;a;-
+1203; 1203001; 1;           ;an..70;  a;a;a;a;a;a;a;a;-
+1203; 1203011; 1;           ;an..19;  a;a;a;a;a;a;-;a;-
+-6; -7; 9999;               object;;  -;-;-;-;-;-;-;-;-
+-6; 9905; 1;                object;;  a;b;b;a;a;-;-;-;-
+9905; 9905001; 1;           ;n..2;    a;b;b;a;a;-;-;-;-
+-6; 1509; 1;                object;;  a;-;a;a;a;-;-;-;-
+1509; 1509001; 1;           ;an..19;  a;-;a;a;a;-;-;-;-
+-7; 1103; 1;                object;;  a;a;a;a;a;a;a;a;-
+1103; 1103001; 1;           ;n..5;    a;a;a;a;a;a;a;a;-
+-7; 1403; 99;               object;;  a;b;a;a;a;-;b;-;-
+1403; 1403039; 1;           ;an3;     a;b;a;a;a;-;-;-;-
+1403; 1403038; 99;          array;a1; b;b;b;b;b;b;b;-;-
+1403; 1403040; 99;          object;;  a;b;a;a;a;-;-;-;-
+1403040; 1403040041; 1;     ;n..17,3; b;b;b;b;b;-;-;-;-
