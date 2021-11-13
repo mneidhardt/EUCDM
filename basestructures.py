@@ -78,9 +78,7 @@ class BaseStructures():
                 else:
                     for i in range(0,3):
                         row[i] = int(row[i])
-                    for i in range(3,6):
-                        row[i] = row[i].strip()
-                    for i in range(6, 14):
+                    for i in range(3,14):
                         row[i] = row[i].strip()
                     relations.append(row)
         return relations
