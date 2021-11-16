@@ -16,12 +16,12 @@ import re
 # L3 has key of the form: zxyvabcdef
 #--------------------------------------------------
 class Node():
-    def __init__(self, key, denumber, cardinality, type, format):
-        self.key = key              # This is the DENumber as integer, and adapted to the level.
-        self.denumber = denumber    # This is the full DE number, i.e. xx yy zzz æøå
-        self.cardinality = cardinality # Cardinality of this node in relation to its parent.
-        self.type = type                # object, array or ???
-        self.format = format            # an..XY or similar, as in EUCDM.
+    def __init__(self, key, cardinality, name, format):
+        self.key = key              # This is the full DENumber. String.
+        self.cardinality = cardinality # Cardinality of this node in relation to its parent. Int.
+        self.name = name                # Name of data element  String.
+        self.format = format            # an..XY or similar, as in EUCDM. String.
+        self.type = None                # JSON type. Will be set after construction.
         self.parent = None
         self.children = []
         
@@ -46,70 +46,34 @@ class Node():
     def getCardinality(self):
         return self.cardinality
 
-    def getType(self):
-        return self.type
+    def getName(self):
+        return self.name
 
     def getFormat(self):
         return self.format
+
+    def getType(self):
+        return self.type
+        
+    def setType(self, type):
+        self.type = type
 
 class Graph():
     def __init__(self, relations):
         self.count = 0
         self.schema = {}
         self.relations = relations    # The source list of relations that we convert to a tree graph.
-        #self.detable = detable  # The table of Data Elements, with D.E.no, name etc.
-        #self.dict2 = dict2      # A dict with all top elements as keys, and a graph of their subelements as value.
-        #self.graph = Node()     # The resulting tree graph. Initially empty.
-        #self.bs = bs            # An instance of BaseStructures.
         
     def showGraph(self, node, indent=''):
-        print(indent, node.getKey())
-            
+        print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
+
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
 
     def buildGraph(self, parent):
         for row in self.relations:
             if row[0] == parent.getKey():
-                kid = Node(row[1], None, row[2], row[3], row[4])
+                kid = Node(row[1], row[2], row[3], row[4])
                 parent.addChild(kid)
                 self.buildGraph(kid)
 
-    # find bfs traversal from starting vertex
-    def bfs(self, vertex):
-        visitedSet = set()
-        queue = []
-        visitedSet.add(vertex)
-        queue.append(vertex)
-        
-        result = []
-        while queue:
-            v = queue[0]
-            result.append(v.getKey())
-            queue = queue[1:]
-            for kid in v.getChildren():
-                if kid not in visitedSet:
-                    visitedSet.add(kid)
-                    queue.append(kid)
-        return result
-
-    # Build json schema using BFS.
-    def bfs2(self, vertex):
-        visitedSet = set()
-        queue = []
-        visitedSet.add(vertex)
-        queue.append(vertex)
-        
-        result = {}
-        while queue:
-            v = queue[0]
-            result[v.getKey()] = {}
-            if v.getCardinality() > 1:
-                result[v.getKey()]["type"] = "array"
-            queue = queue[1:]
-            for kid in v.getChildren():
-                if kid not in visitedSet:
-                    result[v.getKey()][kid.getKey()] = { 'type' : 'object' }
-                    visitedSet.add(kid)
-                    queue.append(kid)
-        return result
