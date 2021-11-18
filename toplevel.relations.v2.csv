@@ -1,0 +1,123 @@
+# Manuelt dannet graf over relationer i H1-H7 og I1 og I2.
+# Dækker kun toplevel DE; dvs hvor de sidste 6 cifre = 0. Bortset fra hvor toplevel ikke har alle underliggende elementer med, fx 1908062.
+# D=1, 6=GS, 7=SI.
+#parent; child; cardinality; DEName; Format; h1;h2;h3;h4;h5;h6;h7;i1;i2
+1;6;1;Goods Shipment;;a;a;a;a;a;a;a;a;a
+6;7;9999;Government Agency Goods Item;;a;a;a;a;a;a;a;a;a
+1;13 20 000 000;1;Person providing a guarantee;;a;-;a;a;-;a;-;-;-
+13 20 000 000;13 20 017 000;1;Identification number;an..17;a;-;a;a;-;a;-;-;-
+1;12 09 000 000;1;LRN;;a;a;a;a;a;a;a;a;a
+12 09 000 000;12 09 001 000;1;LRN;an..22;a;a;a;a;a;a;a;a;a
+
+1;11 01 000 000;1;Declaration type;;a;a;a;a;a;a;-;a;-
+11 01 000 000;11 01 001 000;1;Declaration type;an..5;a;a;a;a;a;a;-;a;-
+
+1;11 02 000 000;1;Additional declaration type;;a;a;a;a;a;a;a;a;-
+11 02 000 000;11 02 001 000;1;Additional declaration type;a1;a;a;a;a;a;a;a;a;-
+
+1;14 17 000 000;1;Internal currency unit;;a;b;a;a;-;-;-;-;-
+14 17 000 000;14 17 001 000;1;Internal currency unit;a3;a;b;a;a;-;-;-;-;-
+
+1;13 21 000 000;1;Person paying the customs duty;;a;-;a;-;a;a;-;a;-
+13 21 000 000;13 21 017 000;1;Identification number;an..17;a;-;a;-;a;a;-;a;-
+
+1;13 06 000 000;1;Representative;;a;a;a;a;a;a;a;a;a
+13 06 000 000;13 06 017 000;1;Identification number;an..17;a;a;a;a;a;a;a;a;a
+13 06 000 000;13 06 030 000;1;Status;n1;a;a;a;a;a;a;a;a;a
+13 06 000 000;13 06 074 000;9;Contact person;;c;c;c;c;c;c;c;c;-
+13 06 074 000;13 06 074 016;1;Name;an..70;a;a;a;a;a;a;a;a;-
+13 06 074 000;13 06 074 075;1;Phone number;an..35;a;a;a;a;a;a;a;a;-
+13 06 074 000;13 06 074 076;1;E-mail address;an..256;a;a;a;a;a;a;a;a;-
+
+1;14 09 000 000;1;Exchange rate;;b;-;b;b;-;-;-;-;-
+14 09 000 000;14 09 001 000;1;Exchange rate;n..12,5;b;-;b;b;-;-;-;-;-
+
+1;13 05 000 000;1;Declarant;;a;a;a;a;a;a;a;a;a
+
+1;12 10 000 000;9;Deferred payment;;b;-;b;b;-;b;b;-;-
+1;12 12 000 000;99;Authorisation;;a;a;a;a;a;a;-;a;a
+7;12 12 000 000;99;Authorisation;;a;a;a;a;a;a;-;a;a
+6;19 01 000 000;1;Container indicator;;a;a;a;a;-;-;-;-;-
+6;99 05 000 000;1;Nature of transaction;;a;b;b;a;a;-;-;-;-
+7;99 05 000 000;1;Nature of transaction;;a;b;b;a;a;-;-;-;-
+6;19 08 000 000;1;Active border transport means;;a;-;a;a;b;-;-;-;-
+19 08 000 000;19 08 062 000;1;Nationality;a2;a;-;a;a;a;-;-;-;-
+6;19 03 000 000;1;Mode of transport at the border;;a;b;a;a;a;-;-;-;-
+19 03 000 000;19 03 001 000;1;Mode of transport at the border;n1;a;b;a;a;a;-;-;-;-
+7;18 08 000 000;1;CUS code;;a;c;c;c;c;-;-;c;-
+7;14 16 000 000;1;Total duties and taxes amount;;b;b;b;b;b;-;-;-;-
+7;99 01 000 000;1;Quota order number;;a;-;-;-;-;-;-;a;-
+7;14 11 000 000;1;Preference;;a;c;a;a;b;-;-;a;-
+6;14 06 000 000;1;Total amount invoiced;;c;-;c;c;c;-;-;c;-
+6;14 05 000 000;1;Invoice currency;;a;-;a;a;a;-;-;a;-
+6;13 14 000 000;99;Additional supply chain actor;;c;c;c;c;c;c;-;c;-
+7;13 14 000 000;99;Additional supply chain actor;;c;c;c;c;c;c;-;c;-
+6;12 02 000 000;99;Additional information;;a;a;a;a;a;a;c;a;-
+7;12 02 000 000;99;Additional information;;a;a;a;a;a;a;c;a;-
+6;12 04 000 000;99;Additional reference;;a;a;a;a;a;a;a;a;-
+7;12 04 000 000;99;Additional reference;;a;a;a;a;a;a;a;a;-
+6;13 09 000 000;1;Buyer;;a;-;-;-;-;-;-;-;-
+7;13 09 000 000;1;Buyer;;a;-;-;-;-;-;-;-;-
+6;19 06 000 000;1;Arrival transport means;;b;-;b;b;b;-;-;-;-
+6;19 04 000 000;1;Inland mode of transport;;a;b;a;a;b;-;-;-;-
+6;16 15 000 000;1;Location of goods;;a;a;a;a;b;-;a;a;a
+6;19 07 000 000;9999;Transport equipment;;a;a;a;a;a;-;-;a;a
+6;14 04 000 000;99;Additions and deductions;;a;-;-;-;b;-;-;-;-
+7;14 04 000 000;99;Additions and deductions;;a;-;-;-;b;-;-;-;-
+6;16 03 000 000;1;Country of destination;;a;a;a;a;b;-;-;-;-
+7;16 03 000 000;1;Country of destination;;a;a;a;a;b;-;-;-;-
+6;16 06 000 000;1;Country of dispatch;;a;b;a;a;a;-;-;a;-
+7;16 06 000 000;1;Country of dispatch;;a;b;a;a;a;-;-;a;-
+6;13 16 000 000;99;Additional fiscal reference;;a;-;-;-;-;a;a;a;-
+7;13 16 000 000;99;Additional fiscal reference;;a;-;-;-;-;-;-;a;-
+6;13 01 000 000;1;Exporter;;a;-;a;a;a;a;a;a;-
+7;13 01 000 000;1;Exporter;;a;-;a;a;a;a;a;a;-
+6;18 04 000 000;1;Gross mass;;a;a;a;a;a;a;a;a;a
+7;18 04 000 000;1;Gross mass;;a;a;a;a;a;-;a;a;a
+7;99 06 000 000;1;Statistical value;;a;b;a;a;a;-;-;-;-
+7;11 03 000 000;1;Goods item number;;a;a;a;a;a;a;a;a;a
+7;18 05 000 000;1;Description of goods;;a;a;a;a;a;a;a;a;a
+7;18 09 000 000;1;Commodity code;;a;b;a;a;a;a;a;a;-
+7;18 02 000 000;1;Supplementary units;;a;a;a;a;a;-;a;a;-
+7;18 01 000 000;1;Net mass;;a;-;-;a;a;c;-;a;-
+7;14 08 000 000;1;Item amount invoiced;;a;-;a;a;a;-;-;a;-
+
+7;14 03 000 000;99;Duties and taxes;;a;b;a;a;a;-;b;-;-
+14 03 000 000;14 03 039 000;1;Tax type;an3;a;b;a;a;a;-;-;-;-
+14 03 000 000;14 03 038 000;99;Method of payment;a1;b;b;b;b;b;b;b;-;-
+14 03 000 000;14 03 042 000;1;Payable tax amount;n..16,2;b;b;b;b;b;-;-;-;-
+14 03 000 000;14 03 040 000;99;Tax base;;a;b;a;a;a;-;-;-;-
+14 03 040 000;14 03 040 041;1;Tax rate;n..17,3;b;b;b;b;b;-;-;-;-
+14 03 040 000;14 03 040 005;1;Measurement unit and qualifier;an..4;a;b;a;a;a;-;-;-;-
+14 03 040 000;14 03 040 006;1;Quantity;n..16,6;a;b;a;a;a;-;-;-;-
+14 03 040 000;14 03 040 014;1;Amount;n..16,2;a;b;a;a;a;-;-;-;-
+14 03 040 000;14 03 040 043;1;Tax amount;n..16,2;a;b;a;a;a;-;-;-;-
+
+7;14 10 000 000;1;Valuation method;;a;-;b;b;b;-;-;-;-
+6;16 04 000 000;1;Region of destination;;a;a;a;a;a;-;-;-;-
+7;16 04 000 000;1;Region of destination;;a;a;a;a;a;-;-;-;-
+7;11 09 000 000;1;Procedure;;a;a;a;a;a;a;-;a;a
+7;11 10 000 000;99;Additional procedure;an3;a;a;a;a;a;a;a;a;-
+7;16 09 000 000;1;Country of preferential origin;;a;c;a;a;b;-;-;a;-
+7;16 08 000 000;1;Country of origin;;a;a;a;a;b;c;-;a;-
+7;18 06 000 000;99;Packaging;;a;a;a;a;a;a;a;a;a
+6;15 09 000 000;1;Date of acceptance;;a;-;a;a;a;-;-;-;-
+7;15 09 000 000;1;Date of acceptance;;a;-;a;a;a;-;-;-;-
+6;12 01 000 000;99;Previous document;;a;a;a;a;a;a;a;a;a
+7;12 01 000 000;99;Previous document;;a;a;a;a;a;a;a;a;a
+6;13 08 000 000;1;Seller;;a;-;-;-;-;-;-;-;-
+7;13 08 000 000;1;Seller;;a;-;-;-;-;-;-;-;-
+6;12 03 000 000;99;Supporting document;;a;a;a;a;a;a;a;a;-
+7;12 03 000 000;99;Supporting document;;a;a;a;a;a;a;a;a;-
+6;12 08 000 000;1;Reference number/UCR;;c;c;c;c;c;c;c;c;-
+7;12 08 000 000;1;Reference number/UCR;;c;c;c;c;c;c;c;c;-
+7;14 07 000 000;1;Valuation indicators;;a;-;-;a;b;-;-;-;-
+6;12 05 000 000;99;Transport document;;a;a;a;a;a;a;a;a;-
+7;12 05 000 000;99;Transport document;;a;a;a;a;a;a;a;a;-
+6;14 01 000 000;1;Delivery terms;;a;b;b;a;a;-;-;-;-
+6;12 11 000 000;1;Warehouse;;b;a;b;b;b;b;-;-;-
+1;13 04 000 000;1;Importer;;a;a;a;a;a;a;a;a;-
+1;99 03 000 000;99;Guarantee reference;;a;-;a;a;-;a;-;-;-
+1;99 02 000 000;9;Guarantee type;;a;-;a;a;-;a;-;-;-
+1;17 09 000 000;1;Customs office of presentation;;a;a;a;a;a;-;-;a;a
+1;17 10 000 000;1;Supervising customs office;;a;a;a;a;-;-;-;a;-

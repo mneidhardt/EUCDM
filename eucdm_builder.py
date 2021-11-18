@@ -18,39 +18,65 @@ class EUCDMBuilder():
                 jsontype = None
                 
             if node.getCardinality() > 1:
+                json['description'] = str(node.getKey())
                 json['type'] = "array"
+                json['maxItems'] = node.getCardinality()
                 json['items'] = {}
                 json['items']['type'] = jsontype
                 # may be more here in relation to format, min/max etc...
-                json['items']['description'] = str(node.getKey())
-                json['maxItems'] = node.getCardinality()
                 result[nodename] = json
             else:
+                json['description'] = str(node.getKey())
                 json['type'] = jsontype
                 # may be more here in relation to format, min/max etc...
-                json['description'] = str(node.getKey())
                 result[nodename] = json
         else:
-            json['properties'] = {}
-            # json['properties']['kidCount'] = len(node.getChildren())
-            result[nodename] = json
-            for kid in node.getChildren():
-                self.buildJSONSchema(kid, result[nodename]['properties'])
+            if node.getCardinality() > 1:
+                json['description'] = str(node.getKey())
+                json['type'] = 'array'
+                json['maxItems'] = node.getCardinality()
+                json['items'] = {}
+                json['items'] = {}
+                json['items']['type'] = 'object'
+                json['items']['properties'] = {}
+                result[nodename] = json
+                for kid in node.getChildren():
+                    self.buildJSONSchema(kid, result[nodename]['items']['properties'])
+            else:
+                json['description'] = str(node.getKey())
+                json['type'] = 'object'
+                json['properties'] = {}
+                result[nodename] = json
+                for kid in node.getChildren():
+                    self.buildJSONSchema(kid, result[nodename]['properties'])
         
-    def baseSchema(self):
+    def baseSchema(self, version):
+        version = [str(e) for e in version] # Convert version numbers to strings.
         result = {}
         result['$schema'] = 'https://json-schema.org/draft/2019-09/schema'
-        result['schemaVersion'] = '2.1.0'
+        result['schemaVersion'] = '.'.join(version) # e.g. '2.1.0'
         result['title'] = 'Declaration'
         result['type'] = 'object'
         result['additionalProperties'] = False
         result['properties'] = {}
+        result['properties']['schemaVersion'] = {}
+        result['properties']['schemaVersion']['pattern'] = '^' + version[0] + '[.][0-9]+[.][0-9]+$'
+        result['properties']['schemaVersion']['type'] = 'string'
+        result['properties']['procedureCategory'] = {}      # The current key for what EUCDM calls 'column'. May be changed to 'column'.
+        result['properties']['procedureCategory']['type'] = 'string';
+        result['properties']['procedureCategory']['maxLength'] = 3;
+        #result['properties']['column']['type'] = 'string'
+        #result['properties']['column']['enum'] = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'I1', 'I2']
 
         return result
         
         
     # Create JSON Schema out of the EUCDM, organised the right way.
-    # First I build a graph from the file based EUCDM, and then I build a JSON Schema from the graph.
+    # Consists of three main steps:
+    # 1. Read EUCDM info.
+    # 2. Build a graph from the info.
+    # 3. Build a JSON Schema from the graph.
+    #---------------------------------------------------------------
     def doJSONSchema(self, relfilename):
         bs = BaseStructures()
         relations = bs.getRelations(relfilename)
@@ -61,17 +87,9 @@ class EUCDMBuilder():
         # mygraf.showGraph(root)
         schema = {}
         self.buildJSONSchema(root, schema)              # Create the specific schema.
-        result = self.baseSchema()                      # Create the base schema.
-        result['properties'] = schema                   # Add specific to the base.
-        result['properties']['schemaVersion'] = {}
-        result['properties']['schemaVersion']['pattern'] = '^2[.][0-9]+[.][0-9]+$'
-        result['properties']['schemaVersion']['type'] = 'string'
-        result['properties']['procedureCategory'] = {}      # The current key for what EUCDM calls 'column'.
-        result['properties']['procedureCategory']['type'] = 'string';
-        result['properties']['procedureCategory']['maxLength'] = 3;
-        #result['properties']['column']['type'] = 'string'
-        #result['properties']['column']['enum'] = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'I1', 'I2']
-        
+        version = [2,2,0]
+        result = self.baseSchema(version)                      # Create the base schema.
+        result['properties'][root.getName()] = schema[root.getName()]
         print(json.dumps(result))
 
 

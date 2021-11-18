@@ -73,7 +73,7 @@ class BaseStructures():
             crdr = csv.reader(csvfile, delimiter=';')
             i = 0
             for row in crdr:
-                if row[0].lstrip().startswith('#'):
+                if len(row) == 0 or row[0].lstrip().startswith('#'):
                     continue
                 else:
                     for i in range(0,2):
