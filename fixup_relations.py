@@ -1,10 +1,15 @@
 import sys
 import csv
+from basestructures import BaseStructures
 
-# This will fix up the early versions of the relations table.
+# This contains functions to manipulate the data, e.g. the relations file.
+# One main aim is to be able to fix up the early versions of the relations table.
 # E.g. add zeros to DENumbers, add DE names etc.
-#-----------------------------------------------------------
+# Another aim is to be able to extract the 'column presence' and cardinality. This ought to be
+# stored separately, and then joined when creating schemas.
+#------------------------------------------------------------------------------
 
+# Find duplicates in the relations file. 
 def findDuplicates(relations):
     dict = {}
     
@@ -28,6 +33,8 @@ def readDETable(filename):
                 dedict[row[0]] = row
     return dedict
 
+# Initially name and format was missing. This will look those 2 up
+# in dedict, which is output from readDETable.
 def addNameAndFormat(relations, dedict):
     newrelations = []
     
@@ -41,7 +48,8 @@ def addNameAndFormat(relations, dedict):
 
         newrelations.append(row)
     return newrelations
-    
+
+# Helper for recreateKeys.
 def fixupKey(key):
     if len(key) == 4:
         tmp = [c for c in key]
@@ -52,6 +60,8 @@ def fixupKey(key):
 
     return key
 
+# Initially, I had thought to cast keys to integer, but I have
+# changed my mind. So I recreate the keys as strings.
 def recreateKeys(relations):
     newrelations = []
     
@@ -61,41 +71,23 @@ def recreateKeys(relations):
         newrelations.append(row)
 
     return newrelations
-            
-def readRelations(filename):
-    with open(filename) as csvfile:
-        crdr = csv.reader(csvfile, delimiter=';')
-        relations = []
-        for row in crdr:
-            if len(row) == 0:
-                continue
-            elif row[0].lstrip().startswith('#'):
-                continue
-            else:
-                for i in range(0,2):
-                    row[i] = row[i].strip()
-                row[2] = int(row[2])
-                for i in range(3,len(row)):
-                    row[i] = row[i].strip()
-                relations.append(row)
-    return relations
 
 def addNewFields(relations):
     newrelations = []
     for row in relations:
         newrelations.append([row[0], row[1], row[2], '<DENAME>', '<FORMAT>'] + row[3:]) # Adding two fields to row.
     return newrelations
-        
-        
-relfilename = sys.argv[1] # Name of file containing relations.
-EUCDMFile = sys.argv[2]   # Name of file with the dump of CWs Excel sheet.
-relations = readRelations(relfilename)
-# findDuplicates(relations) # Do this by itself...
-relations = addNewFields(relations)
-relations = recreateKeys(relations)
 
-dedict = readDETable(EUCDMFile)
-relations = addNameAndFormat(relations, dedict)
-for row in relations:
-    print(';'.join([str(e) for e in row]))
-    
+if __name__ == "__main__":
+    relfilename = sys.argv[1] # Name of file containing relations.
+    EUCDMFile = sys.argv[2]   # Name of file with the dump of CWs Excel sheet.
+    bs = BaseStructures()
+    relations = bs.getRelations(relfilename)
+    # findDuplicates(relations) # Run this by itself, as it just prints out duplicates.
+    relations = addNewFields(relations)
+    relations = recreateKeys(relations)
+
+    dedict = readDETable(EUCDMFile)
+    relations = addNameAndFormat(relations, dedict)
+    for row in relations:
+        print(';'.join([str(e) for e in row]))

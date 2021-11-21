@@ -79,7 +79,7 @@ class BaseStructures():
                     for i in range(0,2):
                         row[i] = row[i].strip()
                     row[2] = int(row[2])
-                    for i in range(3,14):
+                    for i in range(3,len(row)):
                         row[i] = row[i].strip()
                     relations.append(row)
         return relations
