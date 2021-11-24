@@ -1,51 +1,55 @@
-from basestructures import BaseStructures
-from graphs import Graph
-from graphs import Node
-import sys
-import json
+from graphs import Graph, Node
 
-# Simulates returning serialised graph.
+# Deserialising and serialising an N-ary graph.
+# The serialising part is not really my focus here. I have added 4 '!'s at the end of the list of relations,
+# so that it matches output from serialiser, though I think it's unnecessary, certainly in deserialisation.
+#---------------------------------------------------------------------------------------------------
 def getRelations():
+    up = '↑' # Just for fun - made an up arrow with unicode - u2191.
     result = {}
-    result['relations'] = ['1', '1212', '001', '!', '002', '!', '!', '7', '1212', '001', '!', '002', '!', '003', '!', '!']
+    result['relations'] = ['1', '1212', '001', '!', '002', '!', '!', '7', '1212', '001', '!', '002', '!', '003', '!', '!', '!', '!']
     result['cardinalities'] = [1, 9, 1, 0, 1, 0, 0, 999, 9, 1, 0, 1, 0, 1, 0, 0]
     return result
 
-def buildGraphRecursive(relations, cardinalities, idx, node):
+def serialiseGraph(root):
+    result = []
+    serialise(root, result)
+    return result
+
+def serialise(node, result):
+    result.append(node.getKey())
+    if len(node.getChildren()) == 0:
+        result.append('!')
+        return
+
+    for kid in node.getChildren():
+        serialise(kid, result)
+    result.append('!')
+
+def deserialiseGraph(relations, cardinalities):
+    idx = 0
+    root = Node(relations[idx], cardinalities[idx], None, None)
+    deserialise(relations, cardinalities, idx+1, root)
+    return root
+
+def deserialise(relations, cardinalities, idx, node):
     if idx >= len(relations):
-        return node
+        return
     elif relations[idx] == '!':
-        buildGraph(relations, cardinalities, idx+1, node.getParent())
+        deserialise(relations, cardinalities, idx+1, node.getParent())
     else:
-        kid = Node(relations[idx], cardinalities[idx], None, None)
-        if node is None:
-            node = kid
-        else:
-            node.addChild(kid)
-        buildGraph(relations, cardinalities, idx+1, kid)
+        child = Node(relations[idx], cardinalities[idx], None, None)
+        node.addChild(child)
+        child.setParent(node)
+        deserialise(relations, cardinalities, idx+1, child)
 
-def buildGraph(relations, cardinalities):
-    node = Node(relations[0], cardinalities[0], None, None)
+data = getRelations()
+graf = deserialiseGraph(data['relations'], data['cardinalities'])
 
-    for i in range(1, len(relations)):
-        if relations[i] == '!':
-            node = node.getParent()
-        else:
-            kid = Node(relations[i], cardinalities[i], None, None)
-            kid.setParent(node)
-            node = kid
+g = Graph(None)
+g.showGraph(graf)
 
-    while True:
-        if node.getParent() is not None:
-            node = node.getParent()
-        else:
-            break
-
-    graf = Graph(None)
-    graf.showGraph(node)
-
-result = getRelations()
-graf = buildGraph(result['relations'], result['cardinalities'])
-
-
-
+serialisation = serialiseGraph(graf)
+# The 2 following lists should be the same:
+print(serialisation)
+print(data['relations'])
