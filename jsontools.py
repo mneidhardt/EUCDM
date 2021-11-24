@@ -1,10 +1,6 @@
-from basestructures import BaseStructures
-from graphs import Graph
-from graphs import Node
-import sys
 import json
 
-class EUCDMBuilder():
+class JSONTool():
     def buildJSONSchema(self, node, result):
         nodename = node.getName().replace(' ', '_')
         json = {}
@@ -70,30 +66,3 @@ class EUCDMBuilder():
 
         return result
         
-        
-    # Create JSON Schema out of the EUCDM, organised the right way.
-    # Consists of three main steps:
-    # 1. Read EUCDM info.
-    # 2. Build a graph from the info.
-    # 3. Build a JSON Schema from the graph.
-    #---------------------------------------------------------------
-    def doJSONSchema(self, relfilename):
-        bs = BaseStructures()
-        relations = bs.getRelations(relfilename)
-
-        mygraf = Graph(relations)
-        root = Node('1', 1, 'Declaration', None)
-        mygraf.buildGraph(root)
-        mygraf.showGraph(root)
-        schema = {}
-        self.buildJSONSchema(root, schema)              # Create the specific schema.
-        version = [2,2,0]
-        result = self.baseSchema(version)                      # Create the base schema.
-        result['properties'][root.getName()] = schema[root.getName()]
-        print(json.dumps(result))
-
-
-relfilename = sys.argv[1] # Name of file containing relations.
-builder = EUCDMBuilder()
-builder.doJSONSchema(relfilename)
-
