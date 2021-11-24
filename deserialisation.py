@@ -23,7 +23,7 @@ def readNodelist(filename):
             lineno += 1
             if line.strip().startswith('#'):
                 continue
-            elems = line.strip().split('/')
+            elems = [e.strip() for e in line.strip().split('/')]
 
             if len(elems) == 2:
                 nodes.append(elems[0])
