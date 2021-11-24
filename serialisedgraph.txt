@@ -1,5 +1,11 @@
-# Manuelt dannet graf over relationer i H1-H7 og I1 og I2.
-# Dækker kun toplevel DE; dvs hvor de sidste 6 cifre = 0. Bortset fra hvor toplevel ikke har alle underliggende elementer med, fx 1908062.
+# Manually serialised graph of H1.
+# Based on the idea of end-of-child markers, where '!' is the marker here.
+# Interpreted as seen in the code deserialiseGraph().
+# Lines starting with # are ignored.
+# Otherwise:
+# First real line must contain a nodekey, any subsequent lines without '!' are considered children of the previous line.
+# To go back up to a parent, insert a line with a '!'.
+# So this is depth first serialisation.
 # D=1, 6=GS, 7=SI.
 #parent; child/ cardinality
 1
