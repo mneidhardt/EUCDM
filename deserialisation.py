@@ -1,4 +1,5 @@
 from graphs import Graph, Node
+from basestructures import BaseStructures
 import csv
 import sys
 
@@ -76,16 +77,12 @@ def deserialise(nodes, cardinalities, idx, node):
         deserialise(nodes, cardinalities, idx+1, child)
 
 
-#data = readNodelist(filename)
-#print(data['nodes'])
-#print(data['cardinalities'])
-#sys.exit(1)
-
 filename = sys.argv[1]
-data = readNodelist(filename)
-graf = deserialiseGraph(data['nodes'], data['cardinalities'])
-
+#data = readNodelist(filename)
+bs = BaseStructures()
+data = bs.readSerialisedGraph(filename)
 g = Graph(None)
+graf = g.deserialiseGraph(data['nodes'], data['cardinalities'])
 g.showGraph(graf)
 
 serialisation = serialiseGraph(graf)

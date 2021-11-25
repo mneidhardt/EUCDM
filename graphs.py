@@ -49,8 +49,14 @@ class Node():
     def getName(self):
         return self.name
 
+    def setName(self, name):
+        self.name = name
+
     def getFormat(self):
         return self.format
+
+    def setFormat(self, format):
+        self.format = format
 
     def getType(self):
         return self.type
@@ -70,10 +76,45 @@ class Graph():
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
 
+    # The old way of constructing a graph. Not used any more.
     def buildGraph(self, parent):
         for row in self.relations:
             if row[0] == parent.getKey():
                 kid = Node(row[1], row[2], row[3], row[4])
                 parent.addChild(kid)
                 self.buildGraph(kid)
+
+    # Serialises a graph using end-of-child-markers.
+    def serialiseGraph(self, root):
+        result = []
+        serialise(root, result)
+        return result
+    
+    def serialise(self, node, result):
+        result.append(node.getKey())
+        if len(node.getChildren()) == 0:
+            result.append('!')
+            return
+    
+        for kid in node.getChildren():
+            serialise(kid, result)
+        result.append('!')
+    
+    # Deserialise a graph serialised using end-of-child-markers.
+    def deserialiseGraph(self, nodes, cardinalities):
+        idx = 0
+        root = Node(nodes[idx], cardinalities[idx], None, None)
+        self.deserialise(nodes, cardinalities, idx+1, root)
+        return root
+    
+    def deserialise(self, nodes, cardinalities, idx, node):
+        if idx >= len(nodes):
+            return
+        elif nodes[idx] == '!':
+            self.deserialise(nodes, cardinalities, idx+1, node.getParent())
+        else:
+            child = Node(nodes[idx], cardinalities[idx], None, None)
+            node.addChild(child)
+            child.setParent(node)
+            self.deserialise(nodes, cardinalities, idx+1, child)
 

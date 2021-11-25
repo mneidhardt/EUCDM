@@ -9,48 +9,53 @@ import sys
 
 class BaseStructures():
 
-    # Return list of individual numers in DE number.
-    # Expects a string as input, e.g. 12 01 000 000.
-    # Returns a list of integers, e.g. [12, 1, 0, 0].
-    def getDENumberSplitup(self, denumber):
-        return [int(x) for x in denumber.split()]
-    
-    # Return the first 2 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 000 000.
-    # Returns an integer, e.g. 1201.
-    def getPrefix1(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100 + denum[1]
-        
-    # Return the first 3 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 001 000.
-    # Returns an integer, e.g. 1201001.
-    def getPrefix2(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100000 + denum[1]*1000 + denum[2]
-        
-    # Return all 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 001 003.
-    # Returns an integer, e.g. 1201001003.
-    def getPrefix3(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100000000 + denum[1]*1000000 + denum[2]*1000 + denum[3]
-        
-    def checkuniqueness(self, filename):
+    # Reads a serialised n-ary tree graph.
+    # Expects a serialisation using end-of-child-marker.
+    def readSerialisedGraph(self, filename):
+        nodes = []
+        cardinalities = []
+
+        with open(filename) as f:
+            lineno=0
+            for line in f:
+                lineno += 1
+                line = line.strip()
+                if line.startswith('#'):
+                    continue
+                elems = [e.strip() for e in line.split('/')]
+
+                if len(elems) == 2:
+                    nodes.append(elems[0])
+                    cardinalities.append(int(elems[1]))
+                elif len(elems) == 1 and elems[0] == '!':
+                    nodes.append('!')
+                    cardinalities.append(0)
+                elif len(elems) == 1:
+                    nodes.append(elems[0])
+                    cardinalities.append(1)
+                else:
+                    print('Something is not quite right on line ', lineno)
+                    sys.exit(1)
+
+        data = {}
+        data['nodes'] = nodes
+        data['cardinalities'] = cardinalities
+        return data
+
+    # Reads a file with semicolon separated values and returns a dict with this:
+    # Key = dataelement number (xx yy zzz vvv)
+    # Value = [dataelement-name, format]
+    def  getDEDict(self, filename):
+        dict = {}
         with open(filename) as csvfile:
             crdr = csv.reader(csvfile, delimiter=';')
-            h = {}
             for row in crdr:
-                if len(row[59].strip()) > 0:
-                    if row[0] in h:
-                        h[row[0]] = h[row[0]] + 1
-                    else:
-                        h[row[0]] = 1
-                        
-            for key in h:
-                if h[key] != 1:
-                    print(key + ' ' + str(key))
-                    
+                if len(row) == 0 or row[0].lstrip().startswith('#'):
+                    continue
+                else:
+                    dict[row[0].strip()] = [row[2].strip(), row[3].strip()]
+        return dict
+
     # Read CSV file called filename. column = type of document, i.e. H1, H2, H3 etc.
     def readit(self, filename, column):
         with open(filename) as csvfile:
@@ -62,6 +67,7 @@ class BaseStructures():
                     i = i+1
             print(str(i) + ' rows.')
 
+    # Old version - probably outdated now.
     # Reads CSV file with relations for toplevel DataElements.
     # Format is:
     # parent, child, cardinality, name, format, h1,h2,h3,h4,h5,h6,h7,i1,i2
