@@ -3,18 +3,12 @@ import sys
 import re
 
 # Node class for EUCDM Data Elements. Each such Data Element has a Data Element number,
-# called DENumber or DENo.
-# These data elements are organised in levels/groups like this:
-# Top level, L1, has this form: 19 08 000 000
-# Level 2, L2, has this form:   19 08 021 000
-# Level 3, L3, has this form:   19 08 021 001
-# I.e. the last two 3-digit groups can be either zero or non-zero.
-# Each level therefore has a shorter key, with the DE number converted to integer, and 
-# one or both zero groups discarded. I.e.:
-# L1 has key of the form: zxyv
-# L2 has key of the form: zxyvabc
-# L3 has key of the form: zxyvabcdef
-#--------------------------------------------------
+# called DENumber or DENo. I store this in the field key.
+# Cardinality is this node's cardinality in relation to its parent.
+# Name is the textual name of the data element.
+# Format is the type and size of the field, if any. E.g. an10 for 10 alphanumeric chars,
+# and an..30 for 0-30 alphannumeric characters.
+#----------------------------------------------------------------------------------------
 class Node():
     def __init__(self, key, cardinality, name, format):
         self.key = key              # This is the full DENumber. String.
