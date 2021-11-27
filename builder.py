@@ -8,13 +8,17 @@ from basestructures import BaseStructures
 from jsontools import JSONTool
 
 # This will add name and format to nodes of a graph
-def annotateNodes(node, dedict):
+def annotateNodes(node, dedict, jt):
     # print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
     node.setName(dedict[node.getKey()][0])
     node.setFormat(dedict[node.getKey()][1])
+    restrictions = jt.parseFormat(node.getFormat())
+    if restrictions:
+        for r in restrictions:
+            node.addRestriction(r[0], r[1])
 
     for kid in node.getChildren():
-        annotateNodes(kid, dedict)
+        annotateNodes(kid, dedict, jt)
 
 
 if __name__ == "__main__":
@@ -27,9 +31,9 @@ if __name__ == "__main__":
     dedict = bs.getDEDict(defilename)
     gtool = Graph(None)
     graf = gtool.deserialiseGraph(sgraf['nodes'], sgraf['cardinalities'])
-    annotateNodes(graf, dedict)
-    gtool.showGraph(graf)
     jtool = JSONTool()
+    annotateNodes(graf, dedict, jtool)
+    gtool.showGraph(graf)
     schema = {}
     jtool.buildJSONSchema(graf, schema)
     version = [2,2,0]

@@ -1,9 +1,9 @@
-from basestructures import BaseStructures
+from jsontools import JSONTool
 import unittest
 
-class TestBaseStructures(unittest.TestCase):
+class TestJSONTool(unittest.TestCase):
     def test_parseFormat(self):
-        bs = BaseStructures()
+        jt = JSONTool()
 
         formats = ['a1', 'an18', 'a..3', 'an..512', 'n..12,5', 'n..16', 'n1', 'n2', 'n3', 'n12,2']
         results = [
@@ -16,11 +16,11 @@ class TestBaseStructures(unittest.TestCase):
                     [['type', 'integer'], ['minimum', '0'], ['maximum', '9']],
                     [['type', 'integer'], ['minimum', '0'], ['maximum', '99']],
                     [['type', 'integer'], ['minimum', '0'], ['maximum', '999']],
-                    [['type', 'number'], ['minimum', '0'], ['maximum', '999999999999'], ['multipleOf', '0.01']]
+                    [['type', 'number'], ['minimum', '999999999999'], ['maximum', '999999999999'], ['multipleOf', '0.01']]
                     ]
 
         for i in range(0, len(formats)):
-            res = bs.parseFormat(formats[i])
+            res = jt.parseFormat(formats[i])
             self.assertEqual(results[i], res)
 
 if __name__ == '__main__':

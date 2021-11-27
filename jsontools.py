@@ -1,31 +1,95 @@
 import json
+import re
 
 class JSONTool():
+    # Parse the format from EUCDM. They have several different ones:
+    # pattern       My interpretation:
+    # a2        => Alpha characters, exactly 2 of them.
+    # a..2      => Alpha characters, 0 to 2 of them.
+    # n4        => integer with 4 digits.
+    # n..4      => integer with 1 to 4 digits (I'm unsure of this one).
+    # n4,5      => float with 4 digits, 2 of which are decimals.
+    # n..4,2    => float with 1 to 4 digits, 2 of which are decimals (I'm unsure of this one).
+    def parseFormat(self, format):
+        if format.strip() == '':
+            return None
+
+        p1 = re.compile('^a(\d+)$', re.IGNORECASE)
+        p2 = re.compile('^a\.\.(\d+)$', re.IGNORECASE)
+        p3 = re.compile('^an(\d+)$', re.IGNORECASE)
+        p4 = re.compile('^an\.\.(\d+)$', re.IGNORECASE)
+        p5 = re.compile('^n(\d+)$', re.IGNORECASE)
+        p6 = re.compile('^n(\d+),(\d+)$', re.IGNORECASE)
+        p7 = re.compile('^n\.\.(\d+)$', re.IGNORECASE)
+        p8 = re.compile('^n\.\.(\d+),(\d+)$', re.IGNORECASE)
+
+        match = p1.match(format)
+        if match:
+            minmax = '{' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å]'+minmax+'$']]
+
+        match = p2.match(format)
+        if match:
+            minmax = '{0,' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å]'+minmax+'$']]
+
+        match = p3.match(format)
+        if match:
+            minmax = '{' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å0-9]'+minmax+'$']]
+
+        match = p4.match(format)
+        if match:
+            minmax = '{0,' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å0-9]'+minmax+'$']]
+
+        match = p5.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+
+        match = p6.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            decimals = str(pow(10, -1*int(match.group(2))))
+            return [['type', 'number'], ['minimum', max], ['maximum', max], ['multipleOf', decimals]]
+
+        match = p7.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+
+        match = p8.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            decimals = str(pow(10, -1*int(match.group(2))))
+            return [['type', 'number'], ['minimum', '0'], ['maximum', max], ['multipleOf', decimals]]
+
+        raise ValueError('Format "' + format + '" not understood.')
+
     def buildJSONSchema(self, node, result):
         nodename = node.getName().replace(' ', '_')
         json = {}
 
         if node.getFormat():   # if there is a format, this is not an object.
-            if node.getFormat().startswith('a'):
-                jsontype = 'string'
-            elif node.getFormat().startswith('n'):
-                jsontype = 'number'
-            else:
-                jsontype = None
-            # NB: The above must go, and jsontype must come from the node itself, along with further restrictions.
-                
             if node.getCardinality() > 1:
                 json['description'] = str(node.getKey())
                 json['type'] = "array"
                 json['maxItems'] = node.getCardinality()
                 json['items'] = {}
-                json['items']['type'] = jsontype
-                # may be more here in relation to format, min/max etc...
+                json['items']['type'] = node.getType()
+                if node.getRestrictions():
+                    restr = node.getRestrictions()
+                    for k in restr:
+                        json[k] = restr[k]
                 result[nodename] = json
             else:
                 json['description'] = str(node.getKey())
-                json['type'] = jsontype
-                # may be more here in relation to format, min/max etc...
+                json['type'] = node.getType()
+                if node.getRestrictions():
+                    restr = node.getRestrictions()
+                    for k in restr:
+                        json[k] = restr[k]
                 result[nodename] = json
         else:
             if node.getCardinality() > 1:

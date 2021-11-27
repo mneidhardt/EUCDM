@@ -1,6 +1,5 @@
 import json
 import sys
-import re
 
 # Node class for EUCDM Data Elements. Each such Data Element has a Data Element number,
 # called DENumber or DENo. I store this in the field key.
@@ -64,7 +63,21 @@ class Node():
         return self.restrictions
         
     def addRestriction(self, key, value):
-        self.rstrictions[key] = value
+        self.restrictions[key] = value
+
+    def __repr__(self):
+        restr = []
+        if len(self.restrictions) == 0:
+            restr.append('')
+        else:
+            for k in self.restrictions:
+                restr.append(k + ':' + self.restrictions[k])
+        result = []
+        for v in [self.key, str(self.cardinality), self.name, self.format, self.type]:
+            if v:
+                result.append(v)
+        result.append('>>'.join(restr))
+        return '; '.join(result)
 
 class Graph():
     def __init__(self, relations):
@@ -73,7 +86,7 @@ class Graph():
         self.relations = relations    # The source list of relations that we convert to a tree graph.
         
     def showGraph(self, node, indent=''):
-        print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
+        print(indent, str(node))
 
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
