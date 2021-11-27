@@ -2,18 +2,19 @@ import sys
 import json
 import datetime
 import io
+import re
 from graphs import Node, Graph
 from basestructures import BaseStructures
 from jsontools import JSONTool
 
 # This will add name and format to nodes of a graph
-def annotateNodes(node, namedict):
+def annotateNodes(node, dedict):
     # print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
-    node.setName(namedict[node.getKey()][0])
-    node.setFormat(namedict[node.getKey()][1])
+    node.setName(dedict[node.getKey()][0])
+    node.setFormat(dedict[node.getKey()][1])
 
     for kid in node.getChildren():
-        annotateNodes(kid, namedict)
+        annotateNodes(kid, dedict)
 
 
 if __name__ == "__main__":

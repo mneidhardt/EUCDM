@@ -12,6 +12,7 @@ class JSONTool():
                 jsontype = 'number'
             else:
                 jsontype = None
+            # NB: The above must go, and jsontype must come from the node itself, along with further restrictions.
                 
             if node.getCardinality() > 1:
                 json['description'] = str(node.getKey())

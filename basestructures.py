@@ -1,16 +1,90 @@
 import csv
 import sys
+import re
 
 #
 # This class is meant to read input data, and process it into various structures that make it easier
 # to construct a tree graph for the various columns (i.e. messages such as H1, H2 etc).
-# From these graphs it should then be possible to create JSON or XML schemas.
+# From these graphs it is then possible to create JSON or XML schemas.
 #
 
 class BaseStructures():
 
+    def parseFormat(self, format):
+        p1 = re.compile('^a(\d+)$', re.IGNORECASE)
+        p2 = re.compile('^a\.\.(\d+)$', re.IGNORECASE)
+        p3 = re.compile('^an(\d+)$', re.IGNORECASE)
+        p4 = re.compile('^an\.\.(\d+)$', re.IGNORECASE)
+        p5 = re.compile('^n(\d+)$', re.IGNORECASE)
+        p6 = re.compile('^n(\d+),(\d+)$', re.IGNORECASE)
+        p7 = re.compile('^n\.\.(\d+)$', re.IGNORECASE)
+        p8 = re.compile('^n\.\.(\d+),(\d+)$', re.IGNORECASE)
+
+        match = p1.match(format)
+        if match:
+            minmax = '{' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å]'+minmax+'$']]
+
+        match = p2.match(format)
+        if match:
+            minmax = '{0,' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å]'+minmax+'$']]
+
+        match = p3.match(format)
+        if match:
+            minmax = '{' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å0-9]'+minmax+'$']]
+
+        match = p4.match(format)
+        if match:
+            minmax = '{0,' + match.group(1) + '}'
+            return [['type', 'string'], ['pattern', '^[a-åA-Å0-9]'+minmax+'$']]
+
+        match = p5.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+
+        match = p6.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            decimals = str(pow(10, -1*int(match.group(2))))
+            return [['type', 'number'], ['minimum', max], ['maximum', max], ['multipleOf', decimals]]
+
+        match = p7.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+
+        match = p8.match(format)
+        if match:
+            max = str(pow(10, int(match.group(1)))-1)
+            decimals = str(pow(10, -1*int(match.group(2))))
+            return [['type', 'number'], ['minimum', '0'], ['maximum', max], ['multipleOf', decimals]]
+
+    # Jeg er usikker på hvordan n12 skal forstås: maximum 12, eller max 12 cifre?
+
+        raise ValueError('Format "' + format + '" not understood.')
+
     # Reads a serialised n-ary tree graph.
     # Expects a serialisation using end-of-child-marker.
+    # As end-of-child marker I use exclamation mark. When one is encountered,
+    # it means to go up one level.
+    # Also, each can have a cardinality attached, by appending a slash and a number to the node.
+    # and the serialised graph is written to file with one symbol per line.
+    # As an example, the serialised graph:
+    # 1,12,01,!,02,!,!,7/9,12,01,!,02,!,03
+    # deserialises to this graph:
+    #        1
+    #       / \
+    #    12    7
+    #   / \     \
+    # 01  02     12
+    #          /  |  \
+    #         01  02  03
+    # The node labelled 7 has cardinality of 9, though this is not shown in the graph.
+    # This is used in JSON Schema.
+    #---------------------------------------------------------------------------------
     def readSerialisedGraph(self, filename):
         nodes = []
         cardinalities = []

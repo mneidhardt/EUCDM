@@ -16,6 +16,8 @@ class Node():
         self.name = name                # Name of data element  String.
         self.format = format            # an..XY or similar, as in EUCDM. String.
         self.type = None                # JSON type. Will be set after construction.
+        self.restrictions = {}          # This contains restrictions on the type, e.g. minLength etc.
+                                        # Key is e.g. minLength, value is e.g. 1, etc etc.
         self.parent = None
         self.children = []
         
@@ -57,6 +59,12 @@ class Node():
         
     def setType(self, type):
         self.type = type
+
+    def getRestrictions(self):
+        return self.restrictions
+        
+    def addRestriction(self, key, value):
+        self.rstrictions[key] = value
 
 class Graph():
     def __init__(self, relations):
