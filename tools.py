@@ -1,41 +1,29 @@
 import csv
 import sys
+from basestructures import BaseStructures
 
 #
-# This class is meant to manipulate the data I have on EUCDM, i.e.
+# This class is meant to compare, manipulate and do other stuff with 
+# the data I have on EUCDM, i.e.
 # get the names of the Data Elements,
 # get the D.E. numbers, etc etc.
 #
 
 class Tools():
 
-    # Return list of individual numers in DE number.
-    # Expects a string as input, e.g. 12 01 000 000.
-    # Returns a list of integers, e.g. [12, 1, 0, 0].
-    def getDENumberSplitup(self, denumber):
-        return [int(x) for x in denumber.split()]
-    
-    # Return the first 2 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 000 000.
-    # Returns an integer, e.g. 1201.
-    def getPrefix1(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100 + denum[1]
-        
-    # Return the first 3 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 001 000.
-    # Returns an integer, e.g. 1201001.
-    def getPrefix2(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100000 + denum[1]*1000 + denum[2]
-        
-    # Return all 'digit groups' of the DENumber composed as 1 integer.
-    # Expects a string as input, e.g. 12 01 001 003.
-    # Returns an integer, e.g. 1201001003.
-    def getPrefix3(self, denumber):
-        denum = self.getDENumberSplitup(denumber)
-        return denum[0]*100000000 + denum[1]*1000000 + denum[2]*1000 + denum[3]
-        
+    # Compares aspects of CWs matrix with my relations (the old version found e.g. in file toplevel.relations...).
+    # Input is filename of the CW matrix and filename of the relations file.
+    # Expects format to be in 4th column in the CW Matrix, and
+    # in 5th column in the relations file.
+    def compareWithCWMatrix(self, csvfilename, relfilename):
+        bs = BaseStructures()
+        dedict = bs.getDEDict(csvfilename)
+        relations = bs.getRelations(relfilename)
+        for row in relations:
+            if row[1] in dedict:
+                if not dedict[row[1]][1] == row[4]:
+                    print(row[1], ', formats differ: ', row[4], ' != ', dedict[row[1]][1])
+
     def checkuniqueness(self, filename):
         with open(filename) as csvfile:
             crdr = csv.reader(csvfile, delimiter=';')
@@ -156,7 +144,8 @@ class Tools():
             print(str(i) + ' rows.')
 
 
-filename = sys.argv[1]
-colno = int(sys.argv[2])
-tool = Tools()
-tool.readit(filename, colno)
+if __name__ == "__main__":
+    csvfilename = sys.argv[1]
+    relfilename = sys.argv[2]
+    tool = Tools()
+    tool.compareWithCWMatrix(csvfilename, relfilename)
