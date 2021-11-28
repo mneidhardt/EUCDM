@@ -1,5 +1,4 @@
 import csv
-import sys
 
 #
 # This class is meant to read input data, and process it into various structures that make it easier
@@ -9,12 +8,16 @@ import sys
 
 class BaseStructures():
     # Reads a serialised n-ary tree graph.
+    # Returns a dict with 2 keys, 'nodes' and 'cardinalities'
+    # The value for both keys are lists - of nodes and eoc-markerrs and cardinalities.
+    # They are guaranteed to be of same length.
+    #
     # Expects a serialisation using end-of-child-marker.
+    # A serialised graph must have yne symbol/node per line, but a node can have a cardinality appended,
+    # using a slash followed by an integer
     # As end-of-child marker I use exclamation mark. When one is encountered,
     # it means to go up one level.
-    # Also, each can have a cardinality attached, by appending a slash and a number to the node.
-    # and the serialised graph is written to file with one symbol per line.
-    # As an example, the serialised graph:
+    # As an example, the serialised graph (here you must imagine that commas are replaced with newlines ;):
     # 1,12,01,!,02,!,!,7/9,12,01,!,02,!,03
     # deserialises to this graph:
     #        1
@@ -50,8 +53,7 @@ class BaseStructures():
                     nodes.append(elems[0])
                     cardinalities.append(1)
                 else:
-                    print('Something is not quite right on line ', lineno)
-                    sys.exit(1)
+                    raise ValueError('Something is not quite right on line ' + str(lineno))
 
         data = {}
         data['nodes'] = nodes
