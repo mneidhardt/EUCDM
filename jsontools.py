@@ -74,18 +74,16 @@ class JSONTool():
         if node.getFormat():   # if there is a format, this is not an object.
             if node.getCardinality() > 1:
                 json['description'] = str(node.getKey())
-                json['type'] = "array"
+                json['type'] = 'array'
                 json['maxItems'] = node.getCardinality()
                 json['items'] = {}
-                json['items']['type'] = node.getType()
                 if node.getRestrictions():
                     restr = node.getRestrictions()
                     for k in restr:
-                        json[k] = restr[k]
+                        json['items'][k] = restr[k]
                 result[nodename] = json
             else:
                 json['description'] = str(node.getKey())
-                json['type'] = node.getType()
                 if node.getRestrictions():
                     restr = node.getRestrictions()
                     for k in restr:

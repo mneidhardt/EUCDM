@@ -8,7 +8,7 @@ class TestNode(unittest.TestCase):
         name = 'Nature of transaction'
         format = 'a6'
         node = Node(key, cardinality, name, format)
-        node.setType('string')
+        node.addRestriction('type', 'string')
         node.addRestriction('pattern', '^[a-åA-Å]{6}$')
         node.addRestriction('minLength', '6')
         node.addRestriction('maxLength', '6')

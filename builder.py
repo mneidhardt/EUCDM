@@ -7,7 +7,10 @@ from graphs import Node, Graph
 from basestructures import BaseStructures
 from jsontools import JSONTool
 
-# This will add name and format to nodes of a graph
+# This will add name, format and restrictions to nodes of a graph
+# dedict contains, for each dataelement, it's name and format.
+# The restrictions are created based on the format, and together 
+# they make up the validation of the node. 
 def annotateNodes(node, dedict, jt):
     # print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
     node.setName(dedict[node.getKey()][0])

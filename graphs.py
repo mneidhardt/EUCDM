@@ -14,9 +14,9 @@ class Node():
         self.cardinality = cardinality # Cardinality of this node in relation to its parent. Int.
         self.name = name                # Name of data element  String.
         self.format = format            # an..XY or similar, as in EUCDM. String.
-        self.type = None                # JSON type. Will be set after construction.
-        self.restrictions = {}          # This contains restrictions on the type, e.g. minLength etc.
+        self.restrictions = {}          # This contains the type and restrictions on the type, e.g. minLength etc.
                                         # Key is e.g. minLength, value is e.g. 1, etc etc.
+                                        # All as key/value pairs, e.g. type = string etc.
         self.parent = None
         self.children = []
         
@@ -53,12 +53,6 @@ class Node():
     def setFormat(self, format):
         self.format = format
 
-    def getType(self):
-        return self.type
-        
-    def setType(self, type):
-        self.type = type
-
     def getRestrictions(self):
         return self.restrictions
         
@@ -71,12 +65,12 @@ class Node():
             restr.append('')
         else:
             for k in self.restrictions:
-                restr.append(k + ':' + self.restrictions[k])
+                restr.append(k + '=' + self.restrictions[k])
         result = []
-        for v in [self.key, str(self.cardinality), self.name, self.format, self.type]:
+        for v in [self.key, str(self.cardinality), self.name, self.format]:
             if v:
                 result.append(v)
-        result.append('>>'.join(restr))
+        result.append('[' + ' '.join(restr) + ']')
         return '; '.join(result)
 
 class Graph():
