@@ -74,24 +74,15 @@ class Node():
         return '; '.join(result)
 
 class Graph():
-    def __init__(self, relations):
+    def __init__(self):
         self.count = 0
         self.schema = {}
-        self.relations = relations    # The source list of relations that we convert to a tree graph.
         
     def showGraph(self, node, indent=''):
         print(indent, str(node))
 
         for kid in node.getChildren():
             self.showGraph(kid, indent+'    ')
-
-    # The old way of constructing a graph. Not used any more.
-    def buildGraph(self, parent):
-        for row in self.relations:
-            if row[0] == parent.getKey():
-                kid = Node(row[1], row[2], row[3], row[4])
-                parent.addChild(kid)
-                self.buildGraph(kid)
 
     # Serialises a graph using end-of-child-markers.
     def serialiseGraph(self, root):

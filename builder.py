@@ -29,12 +29,14 @@ if __name__ == "__main__":
 
     filename = sys.argv[1] # Name of file containing serialised graph.
     defilename = sys.argv[2] # Name of file containing data element number, name and format.
+
     bs = BaseStructures()
+    gtool = Graph()
+    jtool = JSONTool()
+
     sgraf = bs.readSerialisedGraph(filename)
     dedict = bs.getDEDict(defilename)
-    gtool = Graph(None)
     graf = gtool.deserialiseGraph(sgraf['nodes'], sgraf['cardinalities'])
-    jtool = JSONTool()
     annotateNodes(graf, dedict, jtool)
     gtool.showGraph(graf)
     schema = {}

@@ -73,7 +73,7 @@ class JSONTool():
 
         if node.getFormat():   # if there is a format, this is not an object.
             if node.getCardinality() > 1:
-                json['description'] = str(node.getKey())
+                json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
                 json['type'] = 'array'
                 json['maxItems'] = node.getCardinality()
                 json['items'] = {}
@@ -83,7 +83,7 @@ class JSONTool():
                         json['items'][k] = restr[k]
                 result[nodename] = json
             else:
-                json['description'] = str(node.getKey())
+                json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
                 if node.getRestrictions():
                     restr = node.getRestrictions()
                     for k in restr:
@@ -97,6 +97,7 @@ class JSONTool():
                 json['items'] = {}
                 json['items'] = {}
                 json['items']['type'] = 'object'
+                json['items']['additionalProperties'] = False
                 json['items']['properties'] = {}
                 result[nodename] = json
                 for kid in node.getChildren():
@@ -104,6 +105,7 @@ class JSONTool():
             else:
                 json['description'] = str(node.getKey())
                 json['type'] = 'object'
+                json['additionalProperties'] = False
                 json['properties'] = {}
                 result[nodename] = json
                 for kid in node.getChildren():
