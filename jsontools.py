@@ -131,3 +131,5 @@ class JSONTool():
 
         return result
         
+    def dumps(self, jsonstructure):
+        return(json.dumps(jsonstructure))

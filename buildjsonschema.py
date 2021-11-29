@@ -1,8 +1,6 @@
 import sys
-import json
 import datetime
 import io
-import re
 from graphs import Node, Graph
 from basestructures import BaseStructures
 from jsontools import JSONTool
@@ -47,5 +45,5 @@ if __name__ == "__main__":
 
     schemafilename = columnname + '.schema.' + datetime.datetime.now().strftime("%Y-%m-%d") + '.json'
     with io.open(schemafilename, 'w', encoding='utf8') as fh:
-        fh.write(json.dumps(result))
+        fh.write(jtool.dumps(result))
 
