@@ -11,11 +11,11 @@ from basestructures import BaseStructures
 
 class Tools():
 
-    # Compares aspects of CWs matrix with my relations (the old version found e.g. in file toplevel.relations...).
+    # Compares format in CWs matrix with format in file containing my relations (the old version found e.g. in file toplevel.relations...).
     # Input is filename of the CW matrix and filename of the relations file.
     # Expects format to be in 4th column in the CW Matrix, and
     # in 5th column in the relations file.
-    def compareWithCWMatrix(self, csvfilename, relfilename):
+    def compareWithCWMatrix1(self, csvfilename, relfilename):
         bs = BaseStructures()
         dedict = bs.getDEDict(csvfilename)
         relations = bs.getRelations(relfilename)
@@ -23,6 +23,16 @@ class Tools():
             if row[1] in dedict:
                 if not dedict[row[1]][1] == row[4]:
                     print(row[1], ', formats differ: ', row[4], ' != ', dedict[row[1]][1])
+
+    # Compares the values for 'column presence' in CWs matrix and my relations file.
+    # Purpose is to check if we agree.
+    def compareWithCWMatrix2(self, csvfilename, relfilename):
+        bs = BaseStructures()
+        dedict = bs.getDEDict(csvfilename)
+        relations = bs.getRelations(relfilename)
+        #    for row in relations:
+
+
 
     def checkuniqueness(self, filename):
         with open(filename) as csvfile:
@@ -145,7 +155,8 @@ class Tools():
 
 
 if __name__ == "__main__":
-    csvfilename = sys.argv[1]
-    relfilename = sys.argv[2]
+    arg1 = sys.argv[1]
+    arg2 = sys.argv[2]
     tool = Tools()
-    tool.compareWithCWMatrix(csvfilename, relfilename)
+    # tool.compareWithCWMatrix(csvfilename, relfilename)
+    tool.readit(arg1, int(arg2))
