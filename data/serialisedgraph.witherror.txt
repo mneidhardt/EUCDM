@@ -1,0 +1,74 @@
+# Manually serialised graph of H1.
+# Based on the idea of end-of-child markers, where '!' is the marker here.
+# Interpreted as seen in the code deserialiseGraph().
+# Lines starting with # are ignored.
+# Otherwise:
+# First real line must contain a nodekey, any subsequent lines without '!' are considered children of the previous line.
+# To go back up to a parent, insert a line with a '!'.
+# So this is depth first serialisation.
+# D=1, 6=GS, 7=SI.
+#parent; child/ cardinality
+1
+    16 04 000 000/1
+!
+    13 20 000 000
+        13 20 017 000
+    !
+!
+    12 09 000 000
+        12 09 001 000
+    !
+!
+    11 01 000 000
+        11 01 001 000
+    !
+!
+    11 02 000 000
+        11 02 001 000
+    !
+!
+    14 17 000 000
+        14 17 001 000
+    !
+!
+    13 21 000 000
+        13 21 017 000
+    !
+!
+    13 06 000 000
+        13 06 017 000
+    !
+        13 06 030 000
+    !
+        13 06 074 000/9/x
+            13 06 074 016/1
+        !
+            13 06 074 075/1
+        !
+            13 06 074 076/1
+        !
+    !
+!
+    14 09 000 000/1
+        14 09 001 000/1
+    !
+!
+6
+7/9999
+14 03 000 000/99
+14 03 039 000
+!
+14 03 038 000/99
+!
+14 03 042 000/1
+!
+14 03 040 000/99
+14 03 040 041
+!
+14 03 040 005
+!
+14 03 040 006
+!
+14 03 040 014
+!
+14 03 040 043
