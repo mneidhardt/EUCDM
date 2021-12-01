@@ -1,5 +1,6 @@
 import sys
 import csv
+import re
 
 # This is a function to read a CSV file containing (potentially) all Data Element numbers along with column presence info and cardinality.
 # Specifically, the file has these columns:
@@ -16,8 +17,9 @@ import csv
 # sub sub fields of data elements on the same level.
 #--------------------------------------------------------------------------------------------------------------------------
 
-def readFile(filename):
+def readFile(filename, cardcolumns):
     data = []
+
     with open(filename) as csvfile:
         crdr = csv.reader(csvfile, delimiter=';')
         for row in crdr:
@@ -27,15 +29,25 @@ def readFile(filename):
                 data.append([x.strip() for x in row])
     return data
 
-def extractSerialisedGraph(data, columnno):
+# Get a rough form of the serialised graf by going through a matrix with this for each line:
+# DENo;H1;h2;h3;h4;h5;h6;h7;h8;i1;i2;Card-D;Card-GS;Card-SI
+# The columns right after DENo contain a, b, c or nothing, depending on whether field is present on respective 'column'.
+# The remaining 3 columns contain the cardinality for the DE on the respective level.
+# Args: Data is the matrix outlined above, possibly with more columns.
+# columnno: the column in the matrix for which you want fields, e.g. 7 if you want H7-fields.
+# cardcolumns: the columns in which to look for cardinalities. The function's outer loop loops over these.
+#-----------------------------------------------------------------------------------------------------------------
+def extractSerialisedGraph(data, columnno, cardcolumns):
     # columns: 'h1'=1, h2=2, h3=3, h4=4, h5=5, h6=6, h7=7, i1=8, i2=9.
     # cardcol: 10, 11 eller 12. Cardinality is in these columns, for D, GS and SI, respectively.
     indent = '    '
-    for card in [10, 11, 12]:
+    for card in cardcolumns:
         print(indent + 'Doing kids of level in column ' + str(card) + '. Remember to adjust sub- and subsubfields.')
         for row in data:
-            if row[columnno] != '' and row[card] != '':
-                cardinality = int(row[card])
+            if row[columnno] != '':
+                cardinality = 1
+                if row[card] != '':
+                    cardinality = int(row[card])
                 if cardinality == 1:
                     print(indent + row[0])
                 else:
@@ -45,6 +57,8 @@ def extractSerialisedGraph(data, columnno):
 
 if __name__ == "__main__":
     filename = sys.argv[1] # Name of file containing relations.
-    data = readFile(filename)
-    extractSerialisedGraph(data, 7)
+    columncol = 7;             # Which message are you after? H7 happens to be in column 7.
+    cardcolumns = [10,11,12] # When reading my own little test matrix, DEColumnPresenceCardinality.csv
+    data = readFile(filename, cardcolumns)
+    extractSerialisedGraph(data, columncol, cardcolumns)
 
