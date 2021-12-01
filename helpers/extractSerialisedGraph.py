@@ -44,12 +44,10 @@ def extractSerialisedGraph(data, columnno, cardcolumns):
     for card in cardcolumns:
         print(indent + 'Doing kids of level in column ' + str(card) + '. Remember to adjust sub- and subsubfields.')
         for row in data:
-            if row[columnno] != '':
-                cardinality = 1
-                if row[card] != '':
-                    cardinality = int(row[card])
+            if row[columnno] != '' and row[card] != '':
+                cardinality = int(row[card])
                 if cardinality == 1:
-                    print(indent + row[0])
+                    print(indent + row[0])      # 1 is default cardinality, so I dont print it.
                 else:
                     print(indent + row[0] + '/' + row[card])
                 print('!')
