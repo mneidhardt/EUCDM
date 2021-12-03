@@ -3,49 +3,54 @@ import csv
 
 # This is a script to read a CSV file containing (potentially) all Data Element numbers along with 'column' presence info and cardinality.
 # Specifically, the file has these columns:
-# 1=Data element number (unique column)
+# 1=Data element number This must be a unique columnx, and it must be sorted in ascending order.
 # 2-10: Each of the H and I "columns" (or any other group of "columns" that are coupled in te EUCDM).
 #       Columns 2-10 contain 'a' 'b', 'c' or nothing, as specified in the EUCDM.
 # 11: Data element's cardinality in relation to Declaration level.
 # 12: Data element's cardinality in relation to GS level.
 # 13: Data element's cardinality in relation to SI level.
 # 14: Codelist - either 'y', 'n' or empty.
-# NB: There may or may not be a column 14, but it is not currently used in the script.
+# NB: Column 14 is not currently used in the script.
 # From this I build a serialised graph for the chosen 'column', i.e. one of H1, H2,...H7,I1,I2.
 # It's done by looping over the matrix once per cardinality column, and in that loop I loop once over all DataElements,
 # thereby outputting the children of each level together.
 # NB: It only produces an attepmt at the serialised graph. 
 # You must go over and check the resulting serialised graph.
+#
 #--------------------------------------------------------------------------------------------------------------------------
 
 # Function to determine action when receiving a DE, given the previous one.
 # Does not alter anything, but returns an 2-elem list:
-# [0] = the depth of the current data element.
-# [1] = the number of end-of-child markers to print after the current data element.
-# The [0] element is only used after the inner loop ends, in which case it can be used to print out EOC
+# [0] = the number of end-of-child markers to print before the current data element.
+# [1] = the depth of the current data element. Used by the caller, when inner loop is finished.
+# The [1] element is only used after the inner loop ends, in which case it can be used to print out EOC
 # before the next round - i.e. before the artificial level is printed.
 def determineAction(previous, current):
     if previous == '':
         previous = '00 00 000 000'
+
+    # when comparing previous and current DENo, I want to be able to use both the string and
+    # the integer version, so convert both here to lists of integers.
     prevI = [int(x) for x in previous.split()]
     currI = [int(x) for x in current.split()]
 
     if previous[0:5] == current[0:5] and prevI[2] == 0 and prevI[3] == 0 and currI[2] > 0 and currI[3] == 0:
-        return([2, None]) # Transition 2, State 1->2
+        return([0, 2]) # Transition 2, State 1->2
     elif previous[0:5] != current[0:5] and currI[2] == 0 and currI[3] == 0 and prevI[2] > 0 and prevI[3] == 0:
-        return([1, '!\n!'])    # Transition 3, State 2->1
+        return([2, 1])    # Transition 3, State 2->1
     elif previous[0:5] == current[0:5] and prevI[2] > 0 and prevI[3] == 0 and currI[2] > 0 and currI[3] == 0:
-        return([2, '!']) # Transition 4, State 2->2
+        return([1, 2]) # Transition 4, State 2->2
     elif previous[0:9] == current[0:9] and prevI[3] == 0 and currI[3] > 0:
-        return([3, None]) # Transition 5, State 2->3
+        return([0, 3]) # Transition 5, State 2->3
     elif previous[0:9] == current[0:9] and prevI[3] > 0 and currI[3] == 0:
-        return([2, '!']) # Transition 6, State 3->2
-    elif previous[0:9] == current[0:9] and prevI[2] > 0 and prevI[3] > 0 and currI[2] > 0 and currI[3] > 0:
-        return([3, '!']) # Transition 7, State 3->3
+        return([1, 2]) # Transition 6, State 3->2
+    elif previous[0:9] == current[0:9] and prevI[3] > 0 and currI[3] > 0:
+        return([1, 3]) # Transition 7, State 3->3
     elif previous[0:5] != current[0:5] and prevI[2] > 0 and prevI[3] > 0 and currI[2] == 0 and currI[3] == 0:
-        return([1, '!\n!\n!'])  # Transition 8, State 3->1
+        return([3, 1])  # Transition 8, State 3->1
     else:
-        return(['', None])
+        # print(previous, ' <---> ', current) # Dont know this state, so shout about it!
+        return([0, 0])
 
 def readFile(filename):
     data = []
@@ -66,14 +71,14 @@ def readFile(filename):
 #-----------------------------------------------------------------------------------------------------------------
 def extractSerialisedGraph(data, columnno, cardcolumns):
     indent = '    '
-    for card in cardcolumns:
+    for card in cardcolumns:        # Outer loop - over all the levels, i.e. Decl, GS, SI in this case.
         print(cardcolumns[card])
         previous = ''
         for row in data:
             if row[columnno] != '' and row[card] != '':
                 action = determineAction(previous, row[0])      # Determine what to output.
-                if action[1] is not None:
-                    print(action[1])
+                for i in range(0, action[0]):
+                    print('!')
 
                 cardinality = int(row[card])
                 if cardinality == 1:
@@ -82,17 +87,14 @@ def extractSerialisedGraph(data, columnno, cardcolumns):
                     print(row[0] + '/' + row[card])
 
                 previous = row[0]
-        for i in range(0, action[0]):
+        for i in range(0, action[1]):
             print('!')
 
 if __name__ == "__main__":
     filename = sys.argv[1] # Name of file containing relations.
     columncol = 7;              # Which message are you after? H7 happens to be in column 7.
-    cardcolumns = [10,11,12]    # When reading my own matrix, DEColumnPresenceCardinality.csv
-    cardcolumnids = ['1','6','7']    # ID/name of the levels. These are not ordinary DataElements, so I
-                                     # insert them manually.
     # Cardcolumns: keys are index into the columns in filename, in the order you want them to appear.
-    # In the case of H7, there are only 3 levels, 1=Declaration, 2=Good Shipment, 3=SI (GAGI)
+    # In the case of H7, there are only 3 levels, 1=Declaration, 6=Good Shipment, 7=SI (GAGI)
     # This variable just tells the function which index to use to find cardinality, and which name to use in the tree.
     cardcolumns = {}
     cardcolumns[10] = '1'
