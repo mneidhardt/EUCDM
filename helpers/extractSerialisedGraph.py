@@ -11,10 +11,11 @@ import csv
 # 13: Data element's cardinality in relation to SI level.
 # 14: Codelist - either 'y', 'n' or empty.
 # NB: Column 14 is not currently used in the script.
+#
 # From this I build a serialised graph for the chosen 'column', i.e. one of H1, H2,...H7,I1,I2.
 # It's done by looping over the matrix once per cardinality column, and in that loop I loop once over all DataElements,
 # thereby outputting the children of each level together.
-# NB: It only produces an attepmt at the serialised graph. 
+# NB: It only produces a (fairly good) attempt at the serialised graph. 
 # You must go over and check the resulting serialised graph.
 #
 #--------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +50,7 @@ def determineAction(previous, current):
     elif previous[0:5] != current[0:5] and prevI[2] > 0 and prevI[3] > 0 and currI[2] == 0 and currI[3] == 0:
         return([3, 1])  # Transition 8, State 3->1
     else:
-        # print(previous, ' <---> ', current) # Dont know this state, so shout about it!
+        print('# NB: Unknown situation.', previous, ' <---> ', current) # Dont know this state, so shout about it!
         return([0, 0])
 
 def readFile(filename):
