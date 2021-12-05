@@ -75,35 +75,19 @@ class BaseStructures():
         return dict
 
     # Read CSV file called filename. column = type of document, i.e. H1, H2, H3 etc.
+    # Filename is for instance that of CWs matrix as cvs-file.
     def readit(self, filename, column):
         with open(filename) as csvfile:
             crdr = csv.reader(csvfile, delimiter=';')
             i = 0
             for row in crdr:
-                if len(row[column].strip()) > 0:
+                if len(row) == 0:
+                    continue
+                elif row[0].strip().startswith('#'):
+                    continue
+                elif len(row) < column:
+                    print('Short row: ', row)
+                elif len(row[column].strip()) > 0:
                     print(';'.join(row[0:3]) + ';' + row[column] + ';' + ';'.join(row[62:69]))
                     i = i+1
             print(str(i) + ' rows.')
-
-    # Old version - probably outdated now.
-    # Reads CSV file with relations for toplevel DataElements.
-    # Format is:
-    # parent, child, cardinality, name, format, h1,h2,h3,h4,h5,h6,h7,i1,i2
-    # The h1-h7,i1-i2 columns have 'a', 'b', 'c' or '-', meaning 'a'=mandatory, 'b'=optional, 'c'=optional for ms, '-'=N/A.
-    def getRelations(self, filename):
-        relations = []
-        
-        with open(filename) as csvfile:
-            crdr = csv.reader(csvfile, delimiter=';')
-            i = 0
-            for row in crdr:
-                if len(row) == 0 or row[0].lstrip().startswith('#'):
-                    continue
-                else:
-                    for i in range(0,2):
-                        row[i] = row[i].strip()
-                    row[2] = int(row[2])
-                    for i in range(3,len(row)):
-                        row[i] = row[i].strip()
-                    relations.append(row)
-        return relations

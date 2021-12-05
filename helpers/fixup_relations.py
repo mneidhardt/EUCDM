@@ -82,7 +82,7 @@ if __name__ == "__main__":
     relfilename = sys.argv[1] # Name of file containing relations.
     EUCDMFile = sys.argv[2]   # Name of file with the dump of CWs Excel sheet.
     bs = BaseStructures()
-    relations = bs.getRelations(relfilename)
+    relations = None    # This used to come from this method, but it's outdated: bs.getRelations(relfilename)
     # findDuplicates(relations) # Run this by itself, as it just prints out duplicates.
     relations = addNewFields(relations)
     relations = recreateKeys(relations)

@@ -23,7 +23,7 @@ import csv
 # Function to determine action when receiving a DE, given the previous one.
 # Does not alter anything, but returns an 2-elem list:
 # [0] = the number of end-of-child markers to print before the current data element.
-# [1] = the depth of the current data element. Used by the caller, when inner loop is finished.
+# [1] = the number of end-of-child markers to print after the current data element.
 # The [1] element is only used after the inner loop ends, in which case it can be used to print out EOC
 # before the next round - i.e. before the artificial level is printed.
 def determineAction(previous, current):
@@ -35,7 +35,13 @@ def determineAction(previous, current):
     prevI = [int(x) for x in previous.split()]
     currI = [int(x) for x in current.split()]
 
-    if previous[0:5] == current[0:5] and prevI[2] == 0 and prevI[3] == 0 and currI[2] > 0 and currI[3] == 0:
+    if previous == '00 00 000 000' and currI[0] > 0 and currI[1] > 0 and currI[2] == 0 and currI[3] == 0:
+        # print('# NB: OK, known situation.', previous, ' <---> ', current)
+        return([0, 1])    # Transition 3, State 0->1
+    elif previous == '00 00 000 000':
+        print('# NB: Unknown situation 1.', previous, ' <---> ', current) # Dont know this state, so shout about it!
+        return([0, 0])    # Unknown transition.
+    elif previous[0:5] == current[0:5] and prevI[2] == 0 and prevI[3] == 0 and currI[2] > 0 and currI[3] == 0:
         return([0, 2]) # Transition 2, State 1->2
     elif previous[0:5] != current[0:5] and currI[2] == 0 and currI[3] == 0 and prevI[2] > 0 and prevI[3] == 0:
         return([2, 1])    # Transition 3, State 2->1
@@ -50,7 +56,7 @@ def determineAction(previous, current):
     elif previous[0:5] != current[0:5] and prevI[2] > 0 and prevI[3] > 0 and currI[2] == 0 and currI[3] == 0:
         return([3, 1])  # Transition 8, State 3->1
     else:
-        print('# NB: Unknown situation.', previous, ' <---> ', current) # Dont know this state, so shout about it!
+        print('# NB: Unknown situation 2.', previous, ' <---> ', current) # Dont know this state, so shout about it!
         return([0, 0])
 
 def readFile(filename):

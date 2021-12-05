@@ -18,7 +18,7 @@ class Tools():
     def compareWithCWMatrix1(self, csvfilename, relfilename):
         bs = BaseStructures()
         dedict = bs.getDEDict(csvfilename)
-        relations = bs.getRelations(relfilename)
+        relations = None    # Used to come from this method: bs.getRelations(relfilename)
         for row in relations:
             if row[1] in dedict:
                 if not dedict[row[1]][1] == row[4]:
@@ -29,7 +29,7 @@ class Tools():
     def compareWithCWMatrix2(self, csvfilename, relfilename):
         bs = BaseStructures()
         dedict = bs.getDEDict(csvfilename)
-        relations = bs.getRelations(relfilename)
+        relations = None    # Used to come from this method: bs.getRelations(relfilename)
         #    for row in relations:
 
 
