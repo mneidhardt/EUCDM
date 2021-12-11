@@ -51,6 +51,8 @@ def determineAction(previous, current):
         return([0, 3]) # Transition 5, State 2->3
     elif previous[0:9] == current[0:9] and prevI[3] > 0 and currI[3] == 0:
         return([1, 2]) # Transition 6, State 3->2
+    elif previous[0:5] == current[0:5] and prevI[2] > 0 and prevI[3] > 0 and currI[2] > 0 and currI[3] == 0:
+        return([2, 2]) # Transition 6, State 3->2
     elif previous[0:9] == current[0:9] and prevI[3] > 0 and currI[3] > 0:
         return([1, 3]) # Transition 7, State 3->3
     elif previous[0:5] != current[0:5] and prevI[2] > 0 and prevI[3] > 0 and currI[2] == 0 and currI[3] == 0:

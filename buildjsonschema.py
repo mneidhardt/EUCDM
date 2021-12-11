@@ -21,29 +21,44 @@ def annotateNodes(node, dedict, jt):
     for kid in node.getChildren():
         annotateNodes(kid, dedict, jt)
 
+def syntax(legalcolumns):
+    txt = []
+    txt.append(sys.argv[0] + ' sg de cn')
+    txt.append('  sg is the filename containing the serialied graph.')
+    txt.append('  de is the filename containing the data elements, their names and formats.')
+    txt.append('  cn is the columnname you want a schema for. Currently one of these:')
+    txt.append(legalcolumns)
+    return "\n".join(txt)
 
 if __name__ == "__main__":
-    columnname = 'h1'
 
-    filename = sys.argv[1] # Name of file containing serialised graph.
-    defilename = sys.argv[2] # Name of file containing data element number, name and format.
+    try:
+        legalcolumns = [ 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'I1', 'I2' ]
 
-    bs = BaseStructures()
-    gtool = Graph()
-    jtool = JSONTool()
+        filename = sys.argv[1] # Name of file containing serialised graph.
+        defilename = sys.argv[2] # Name of file containing data element number, name and format.
+        columnname = sys.argv[3] # 'Column' name, currently one of these:
+        if columnname not in legalcolumns:
+            raise ValueError()
 
-    sgraf = bs.readSerialisedGraph(filename)
-    dedict = bs.getDEDict(defilename)
-    graf = gtool.deserialiseGraph(sgraf['nodes'], sgraf['cardinalities'])
-    annotateNodes(graf, dedict, jtool)
-    gtool.showGraph(graf)
-    schema = {}
-    jtool.buildJSONSchema(graf, schema)
-    version = [2,2,0]
-    result = jtool.baseSchema(version)
-    result['properties'][graf.getName()] = schema[graf.getName()]
+        bs = BaseStructures()
+        gtool = Graph()
+        jtool = JSONTool()
+    
+        sgraf = bs.readSerialisedGraph(filename)
+        dedict = bs.getDEDict(defilename)
+        graf = gtool.deserialiseGraph(sgraf['nodes'], sgraf['cardinalities'])
+        annotateNodes(graf, dedict, jtool)
+        gtool.showGraph(graf)
+        schema = {}
+        jtool.buildJSONSchema(graf, schema)
+        version = [2,2,0]
+        result = jtool.baseSchema(version)
+        result['properties'][graf.getName()] = schema[graf.getName()]
+    
+        schemafilename = columnname + '.schema.' + datetime.datetime.now().strftime("%Y-%m-%d") + '.json'
+        with io.open(schemafilename, 'w', encoding='utf8') as fh:
+            fh.write(jtool.dumps(result))
 
-    schemafilename = columnname + '.schema.' + datetime.datetime.now().strftime("%Y-%m-%d") + '.json'
-    with io.open(schemafilename, 'w', encoding='utf8') as fh:
-        fh.write(jtool.dumps(result))
-
+    except (IndexError, ValueError, NameError):
+        print(syntax(','.join(legalcolumns)))
