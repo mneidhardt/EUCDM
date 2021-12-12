@@ -67,7 +67,7 @@ def readFile(filename):
     with open(filename) as csvfile:
         crdr = csv.reader(csvfile, delimiter=';')
         for row in crdr:
-            if len(row) == 0 or row[0].lstrip().startswith('#'):
+            if len(row) == 0:   # or row[0].lstrip().startswith('#'):
                 continue
             else:
                 data.append([x.strip() for x in row])
@@ -101,7 +101,7 @@ def extractSerialisedGraph(data, columnno, cardcolumns):
 
 if __name__ == "__main__":
     filename = sys.argv[1] # Name of file containing relations.
-    columncol = 7;              # Which message are you after? H7 happens to be in column 7.
+    columnname = sys.argv[2];              # One of H1,H2,H3,H4,H5,H6,H7,I1,I2.
     # Cardcolumns: keys are index into the columns in filename, in the order you want them to appear.
     # In the case of H7, there are only 3 levels, 1=Declaration, 6=Good Shipment, 7=SI (GAGI)
     # This variable just tells the function which index to use to find cardinality, and which name to use in the tree.
@@ -110,4 +110,7 @@ if __name__ == "__main__":
     cardcolumns[11] = '6'
     cardcolumns[12] = '7'
     data = readFile(filename)
+    headers = data.pop(0)
+    # Find the index of the column containing the wanted 'column', i.e. message.
+    columncol = headers.index(columnname)
     extractSerialisedGraph(data, columncol, cardcolumns)
