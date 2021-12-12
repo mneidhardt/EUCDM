@@ -45,25 +45,29 @@ class JSONTool():
 
         match = p5.match(format)
         if match:
-            max = str(pow(10, int(match.group(1)))-1)
-            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+            max = int(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', 0], ['maximum', max]]
 
         match = p6.match(format)
         if match:
-            max = str(pow(10, int(match.group(1)))-1)
-            decimals = str(pow(10, -1*int(match.group(2))))
+            size1 = int(match.group(1)) # Size of the whole expression.
+            size2 = int(match.group(2)) # Size of the decimals part.
+            max = float(pow(10, size1-size2)-1)
+            decimals = float(pow(10, -1*int(match.group(2))))
             return [['type', 'number'], ['minimum', max], ['maximum', max], ['multipleOf', decimals]]
 
         match = p7.match(format)
         if match:
-            max = str(pow(10, int(match.group(1)))-1)
-            return [['type', 'integer'], ['minimum', '0'], ['maximum', max]]
+            max = int(pow(10, int(match.group(1)))-1)
+            return [['type', 'integer'], ['minimum', 0], ['maximum', max]]
 
         match = p8.match(format)
         if match:
-            max = str(pow(10, int(match.group(1)))-1)
-            decimals = str(pow(10, -1*int(match.group(2))))
-            return [['type', 'number'], ['minimum', '0'], ['maximum', max], ['multipleOf', decimals]]
+            size1 = int(match.group(1)) # Size of the whole expression.
+            size2 = int(match.group(2)) # Size of the decimals part.
+            max = float(pow(10, size1-size2)-1)
+            decimals = float(pow(10, -1*int(match.group(2))))
+            return [['type', 'number'], ['minimum', 0], ['maximum', max], ['multipleOf', decimals]]
 
         raise ValueError('Format "' + format + '" not understood.')
 

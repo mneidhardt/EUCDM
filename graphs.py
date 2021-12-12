@@ -65,7 +65,7 @@ class Node():
             restr.append('')
         else:
             for k in self.restrictions:
-                restr.append(k + '=' + self.restrictions[k])
+                restr.append(k + '=' + str(self.restrictions[k]))
         result = []
         for v in [self.key, str(self.cardinality), self.name, self.format]:
             if v:
