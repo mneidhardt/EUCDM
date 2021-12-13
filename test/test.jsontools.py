@@ -11,12 +11,12 @@ class TestJSONTool(unittest.TestCase):
                     [['type', 'string'], ['pattern', '^[a-åA-Å0-9]{18}$']],
                     [['type', 'string'], ['pattern', '^[a-åA-Å]{0,3}$']],
                     [['type', 'string'], ['pattern', '^[a-åA-Å0-9]{0,512}$']],
-                    [['type', 'number'], ['minimum', '0'], ['maximum', '999999999999'], ['multipleOf', '1e-05']],
-                    [['type', 'integer'], ['minimum', '0'], ['maximum', '9999999999999999']],
-                    [['type', 'integer'], ['minimum', '0'], ['maximum', '9']],
-                    [['type', 'integer'], ['minimum', '0'], ['maximum', '99']],
-                    [['type', 'integer'], ['minimum', '0'], ['maximum', '999']],
-                    [['type', 'number'], ['minimum', '999999999999'], ['maximum', '999999999999'], ['multipleOf', '0.01']]
+                    [['type', 'number'], ['minimum', 0], ['maximum', 9999999], ['multipleOf', 1e-05]],
+                    [['type', 'integer'], ['minimum', 0], ['maximum', 9999999999999999]],
+                    [['type', 'integer'], ['minimum', 0], ['maximum', 9]],
+                    [['type', 'integer'], ['minimum', 0], ['maximum', 99]],
+                    [['type', 'integer'], ['minimum', 0], ['maximum', 999]],
+                    [['type', 'number'], ['minimum', 9999999999], ['maximum', 9999999999], ['multipleOf', 0.01]]
                     ]
 
         for i in range(0, len(formats)):
