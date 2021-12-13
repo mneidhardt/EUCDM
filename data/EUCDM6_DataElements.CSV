@@ -14,7 +14,7 @@
 4;;HC;;
 5;;HI;;
 6;;Goods Shipment;;
-7;;Government Agency Goods Shipment;;
+7;;Government Agency Goods Item;;
 11 01 000 000;1/1;Declaration type;;;;;;A;A;A;A;A;;A;A;A;;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;;A;;1x;;;;1x;;
 11 01 001 000;1/1;Declaration type;an..5;Y;;;;A;A;A;A;A;;A;A;A;;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;;A;;;;;;;;
 11 02 000 000;1/2;Additional declaration type;;;;;;A;A;A;A;A;;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;;1x;;;;;;

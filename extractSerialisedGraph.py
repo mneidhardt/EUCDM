@@ -108,7 +108,7 @@ if __name__ == "__main__":
     cardcolumns = {}
     cardcolumns[10] = '1'
     cardcolumns[11] = '6'
-    cardcolumns[12] = '7'
+    cardcolumns[12] = '7/9999'
     data = readFile(filename)
     headers = data.pop(0)
     # Find the index of the column containing the wanted 'column', i.e. message.
