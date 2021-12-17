@@ -14,9 +14,6 @@ class Node():
         self.cardinality = cardinality # Cardinality of this node in relation to its parent. Int.
         self.name = name                # Name of data element  String.
         self.format = format            # an..XY or similar, as in EUCDM. String.
-        self.restrictions = {}          # This contains the type and restrictions on the type, e.g. minLength etc.
-                                        # Key is e.g. minLength, value is e.g. 1, etc etc.
-                                        # All as key/value pairs, e.g. type = string etc.
         self.parent = None
         self.children = []
         
@@ -53,24 +50,12 @@ class Node():
     def setFormat(self, format):
         self.format = format
 
-    def getRestrictions(self):
-        return self.restrictions
-        
-    def addRestriction(self, key, value):
-        self.restrictions[key] = value
-
     def __repr__(self):
-        restr = []
-        if len(self.restrictions) == 0:
-            restr.append('')
-        else:
-            for k in self.restrictions:
-                restr.append(k + '=' + str(self.restrictions[k]))
         result = []
         for v in [self.key, str(self.cardinality), self.name, self.format]:
             if v:
                 result.append(v)
-        result.append('[' + ' '.join(restr) + ']')
+
         return '; '.join(result)
 
 class Graph():

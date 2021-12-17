@@ -13,10 +13,6 @@ def annotateNodes(node, dedict, jt):
     # print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
     node.setName(dedict[node.getKey()][0])
     node.setFormat(dedict[node.getKey()][1])
-    restrictions = jt.parseFormat(node.getFormat())
-    if restrictions:
-        for r in restrictions:
-            node.addRestriction(r[0], r[1])
 
     for kid in node.getChildren():
         annotateNodes(kid, dedict, jt)
@@ -54,7 +50,8 @@ if __name__ == "__main__":
         jtool.buildJSONSchema(graf, schema)
         version = [2,2,0]
         result = jtool.baseSchema(version)
-        result['properties'][graf.getName()] = schema[graf.getName()]
+        camelcaseName = jtool.toCamelCase(graf.getName())   # This is the name of the root node.
+        result['properties'][graf.getName()] = schema[camelcaseName]
     
         schemafilename = columnname + '.schema.' + datetime.datetime.now().strftime("%Y-%m-%d") + '.json'
         with io.open(schemafilename, 'w', encoding='utf8') as fh:

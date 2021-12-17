@@ -5,8 +5,10 @@ class TestJSONTool(unittest.TestCase):
     def test_parseFormat(self):
         jt = JSONTool()
 
-        formats = ['a1', 'an18', 'a..3', 'an..512', 'n..12,5', 'n..16', 'n1', 'n2', 'n3', 'n12,2']
+        formats = ['', '   ', 'a1', 'an18', 'a..3', 'an..512', 'n..12,5', 'n..16', 'n1', 'n2', 'n3', 'n12,2']
         results = [
+                    [],
+                    [],
                     [['type', 'string'], ['pattern', '^[a-åA-Å]{1}$']],
                     [['type', 'string'], ['pattern', '^[a-åA-Å0-9]{18}$']],
                     [['type', 'string'], ['pattern', '^[a-åA-Å]{0,3}$']],
@@ -22,6 +24,17 @@ class TestJSONTool(unittest.TestCase):
         for i in range(0, len(formats)):
             res = jt.parseFormat(formats[i])
             self.assertEqual(results[i], res)
+
+    def test_toCamelCase(self):
+        strings = ['Hi stranger', 'So you thought it was over, huh?', 'noNeed', '']
+        results = ['hiStranger', 'soYouThoughtItWasOver,Huh?', 'noNeed', '']
+
+        jt = JSONTool()
+
+        for i in range(0, len(strings)):
+            cc = jt.toCamelCase(strings[i])
+            self.assertEqual(results[i], cc)
+
 
 if __name__ == '__main__':
     unittest.main()

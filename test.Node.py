@@ -8,10 +8,6 @@ class TestNode(unittest.TestCase):
         name = 'Nature of transaction'
         format = 'a6'
         node = Node(key, cardinality, name, format)
-        node.addRestriction('type', 'string')
-        node.addRestriction('pattern', '^[a-åA-Å]{6}$')
-        node.addRestriction('minLength', '6')
-        node.addRestriction('maxLength', '6')
         print(str(node))
 
         self.assertEqual(node.getKey(), key)

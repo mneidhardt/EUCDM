@@ -2,6 +2,19 @@ import json
 import re
 
 class JSONTool():
+
+    def toCamelCase(self, name):
+        if name.strip() == '':
+            return name
+        if ' ' not in name:
+            return name[0].lower() + name[1:]
+        else:
+            elements = name.split()
+            result = elements.pop(0).lower()
+            for e in elements:
+                result += e.title()
+            return result
+
     # Parse the format from EUCDM. They have several different ones:
     # pattern       My interpretation:
     # a2        => Alpha characters, exactly 2 of them.
@@ -12,7 +25,7 @@ class JSONTool():
     # n..4,2    => float with 1 to 4 digits, 2 of which are decimals (I'm unsure of this one).
     def parseFormat(self, format):
         if format.strip() == '':
-            return None
+            return []
 
         p1 = re.compile('^a(\d+)$', re.IGNORECASE)
         p2 = re.compile('^a\.\.(\d+)$', re.IGNORECASE)
@@ -72,26 +85,24 @@ class JSONTool():
         raise ValueError('Format "' + format + '" not understood.')
 
     def buildJSONSchema(self, node, result):
-        nodename = node.getName().replace(' ', '_')
+        nodename = self.toCamelCase(node.getName())
         json = {}
 
         if node.getFormat():   # if there is a format, this is not an object.
+            restrictions = self.parseFormat(node.getFormat())
+
             if node.getCardinality() > 1:
                 json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
                 json['type'] = 'array'
                 json['maxItems'] = node.getCardinality()
                 json['items'] = {}
-                if node.getRestrictions():
-                    restr = node.getRestrictions()
-                    for k in restr:
-                        json['items'][k] = restr[k]
+                for r in restrictions:
+                    json['items'][r[0]] = r[1]
                 result[nodename] = json
             else:
                 json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
-                if node.getRestrictions():
-                    restr = node.getRestrictions()
-                    for k in restr:
-                        json[k] = restr[k]
+                for r in restrictions:
+                    json[r[0]] = r[1]
                 result[nodename] = json
         else:
             if node.getCardinality() > 1:
@@ -114,6 +125,9 @@ class JSONTool():
                 result[nodename] = json
                 for kid in node.getChildren():
                     self.buildJSONSchema(kid, result[nodename]['properties'])
+                    if 'required' not in json:
+                        json['required'] = []
+                    json['required'].append(self.toCamelCase(kid.getName())+"MANDATORY?")
         
     def baseSchema(self, version):
         version = [str(e) for e in version] # Convert version numbers to strings.
