@@ -1,6 +1,7 @@
 # Dump af CWs Excel-ark med samtlige Data-Elementer (ikke fra JSON-maskinen).
 # Denne matrix kan IKKE bruges til autogenerering af serialiseret graf: De sidste kolonner der viser kardinalitet på de 7 niveauer
-# er ikke fuldstændige, så man kan ikke af dem læse hvor et felt forekommer.
+# er ukorrekte, så man kan ikke af dem læse hvor et felt forekommer.
+# Søjlen med codelist (Code) er dog korrekt, efter jeg har rettet en enkelt fejl i denne udgave.
 # Jeg har tilføjet 'de 7 levels' der står som de første rækker efter headerrækken.
 #DE No.;Ref ID5;Data element/class name / Data sub-element/sub-class name;Format;Code;A1;A2;A3;B1;B2;B3;B4;C1;C2;D1;D2;D3;D4;E1;E2;F10;F11;F12;F13;F14;F15;F16;F20;F21;F22;F23;F24;F25;F26;F27;F28;F29;F30;F31;F32;F33;F40;F41;F42;F43;F44;F45;F50;F51;G2;G3;G4;G5;H1;H2;H3;H4;H5;H6;H7;I1;I2;D;MC;MI;HC;HI;GS;SI
 #
