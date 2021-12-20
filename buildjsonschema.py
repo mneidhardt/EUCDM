@@ -5,14 +5,11 @@ from graphs import Node, Graph
 from basestructures import BaseStructures
 from jsontools import JSONTool
 
-# This will add name, format and restrictions to nodes of a graph
-# dedict contains, for each dataelement, it's name and format.
-# The restrictions are created based on the format, and together 
-# they make up the validation of the node. 
+# This will information to nodes of a graph
 def annotateNodes(node, dedict, jt):
-    # print(indent, node.getKey(), '(', node.getCardinality(), node.getName(), node.getFormat(), ')')
     node.setName(dedict[node.getKey()][0])
     node.setFormat(dedict[node.getKey()][1])
+    node.setCodelist(dedict[node.getKey()][2])
 
     for kid in node.getChildren():
         annotateNodes(kid, dedict, jt)
@@ -50,8 +47,8 @@ if __name__ == "__main__":
         jtool.buildJSONSchema(graf, schema)
         version = [2,2,0]
         result = jtool.baseSchema(version)
-        camelcaseName = jtool.toCamelCase(graf.getName())   # This is the name of the root node.
-        result['properties'][graf.getName()] = schema[camelcaseName]
+        convertedname = jtool.convertName(graf.getName())   # This is the name of the root node.
+        result['properties'][convertedname] = schema[convertedname]
     
         schemafilename = columnname + '.schema.' + datetime.datetime.now().strftime("%Y-%m-%d") + '.json'
         with io.open(schemafilename, 'w', encoding='utf8') as fh:

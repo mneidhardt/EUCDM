@@ -1,5 +1,8 @@
-from graphs import Node
 import unittest
+import sys
+import os
+sys.path.append(os.getcwd() + '/..')
+from graphs import Node
 
 class TestNode(unittest.TestCase):
     def test_parseFormat(self):

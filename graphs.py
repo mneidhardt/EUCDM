@@ -14,6 +14,7 @@ class Node():
         self.cardinality = cardinality # Cardinality of this node in relation to its parent. Int.
         self.name = name                # Name of data element  String.
         self.format = format            # an..XY or similar, as in EUCDM. String.
+        self.codelist = None            # Does this field have a code list. Value is one of ['Y', 'N', None].
         self.parent = None
         self.children = []
         
@@ -50,9 +51,15 @@ class Node():
     def setFormat(self, format):
         self.format = format
 
+    def getCodelist(self):
+        return self.codelist
+
+    def setCodelist(self, value):
+        self.codelist = value
+
     def __repr__(self):
         result = []
-        for v in [self.key, str(self.cardinality), self.name, self.format]:
+        for v in [self.key, str(self.cardinality), self.name, self.format, self.codelist]:
             if v:
                 result.append(v)
 

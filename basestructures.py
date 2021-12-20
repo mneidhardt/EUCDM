@@ -71,7 +71,7 @@ class BaseStructures():
                 if len(row) == 0 or row[0].lstrip().startswith('#'):
                     continue
                 else:
-                    dict[row[0].strip()] = [row[2].strip(), row[3].strip()]
+                    dict[row[0].strip()] = [row[2].strip(), row[3].strip(), row[4].strip().upper()]
         return dict
 
     # Read CSV file called filename. column = type of document, i.e. H1, H2, H3 etc.

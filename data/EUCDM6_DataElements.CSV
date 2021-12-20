@@ -36,7 +36,7 @@
 11 09 001 000;1/10;Requested procedure;an2;Y;;;;A;A;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;;A;A;;;;;;;1x
 11 09 002 000;1/10;Previous procedure;an2;Y;;;;A;A;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;;A;A;;;;;;;1x
 11 10 000 000;1/11;Additional procedure;an3;;;;;A;A;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;;;;;;;;99x
-11 10 001 000;1/11;Additional procedure;an3;;;;;A;A;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;;;;;;;;
+11 10 001 000;1/11;Additional procedure;an3;Y;;;;A;A;A;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;;;;;;;;
 12 01 000 000;2/1;Previous document;;N;A;A;A;A;A;A;B;A;A;A;A;A;;C;C;;;;;;;;;;;;;A;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;A;A;A;A;A;9999x;9999x;99x;99x;99x;99x;99x
 12 01 001 000;;Reference number;an..70;N;A;A;A;A;A;A;B;A;A;A;A;A;;A;A;;;;;;;;;;;;;A;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;A;A;A;A;A;1x;1x;1x;1x;1x;1x;1x
 12 01 002 000;;Type;an4;N;A;A;A;A;A;A;B;A;A;A;A;A;;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A;A;A;A;A;A;A;A;A;A;A;A;1x;1x;1x;1x;1x;1x;1x

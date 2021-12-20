@@ -1,19 +1,25 @@
 import json
 import re
+import datetime
 
 class JSONTool():
 
-    def toCamelCase(self, name):
-        if name.strip() == '':
-            return name
-        if ' ' not in name:
-            return name[0].lower() + name[1:]
-        else:
-            elements = name.split()
-            result = elements.pop(0).lower()
-            for e in elements:
-                result += e.title()
-            return result
+    #def toCamelCase(self, name):
+    #    if name.strip() == '':
+    #        return name
+    #    if ' ' not in name:
+    #        return name
+    #    else:
+    #        elements = name.split()
+    #        result = elements.pop(0).lower()
+    #        for e in elements:
+    #            result += e.title()
+    #        return result
+
+    # I am not sure how to convert all the different names to camel case, consistently,
+    # so for the time being, I do this.
+    def convertName(self, name):
+        return name.replace(' ', '_')
 
     # Parse the format from EUCDM. They have several different ones:
     # pattern       My interpretation:
@@ -85,7 +91,7 @@ class JSONTool():
         raise ValueError('Format "' + format + '" not understood.')
 
     def buildJSONSchema(self, node, result):
-        nodename = self.toCamelCase(node.getName())
+        nodename = self.convertName(node.getName())
         json = {}
 
         if node.getFormat():   # if there is a format, this is not an object.
@@ -117,6 +123,9 @@ class JSONTool():
                 result[nodename] = json
                 for kid in node.getChildren():
                     self.buildJSONSchema(kid, result[nodename]['items']['properties'])
+                    if 'required' not in json['items']:
+                        json['items']['required'] = []
+                    json['items']['required'].append(self.convertName(kid.getName()))
             else:
                 json['description'] = str(node.getKey())
                 json['type'] = 'object'
@@ -127,7 +136,7 @@ class JSONTool():
                     self.buildJSONSchema(kid, result[nodename]['properties'])
                     if 'required' not in json:
                         json['required'] = []
-                    json['required'].append(self.toCamelCase(kid.getName())+"MANDATORY?")
+                    json['required'].append(self.convertName(kid.getName()))
         
     def baseSchema(self, version):
         version = [str(e) for e in version] # Convert version numbers to strings.
@@ -135,6 +144,7 @@ class JSONTool():
         result['$schema'] = 'https://json-schema.org/draft/2019-09/schema'
         result['schemaVersion'] = '.'.join(version) # e.g. '2.1.0'
         result['title'] = 'Declaration'
+        result['description'] = 'Created ' + datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
         result['type'] = 'object'
         result['additionalProperties'] = False
         result['properties'] = {}
