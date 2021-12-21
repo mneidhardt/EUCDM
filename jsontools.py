@@ -138,6 +138,34 @@ class JSONTool():
                         json['required'] = []
                     json['required'].append(self.convertName(kid.getName()))
         
+    def buildJSONInstance(self, node):
+        nodename = self.convertName(node.getName())
+
+        if node.getFormat():   # if there is a format, this is not an object.
+            restrictions = self.parseFormat(node.getFormat())
+
+            if node.getCardinality() > 1:
+                json = []
+                for i in range(0, min(node.getCardinality(), 2)):
+                    json.append(node.getFormat())
+                return json
+            else:
+                return '<' + node.getName() + '/' + node.getFormat() + '>'# TODO: return a realistic value following the format.
+        else:
+            if node.getCardinality() > 1:
+                children = {}
+                for kid in node.getChildren():
+                    children[self.convertName(kid.getName())] = self.buildJSONInstance(kid)
+                json = []
+                json.append(children)
+                return json
+            else:
+                json = {}
+                for kid in node.getChildren():
+                    childobj = self.buildJSONInstance(kid)
+                    json[self.convertName(kid.getName())] = childobj
+                return json
+        
     def baseSchema(self, version):
         version = [str(e) for e in version] # Convert version numbers to strings.
         result = {}
