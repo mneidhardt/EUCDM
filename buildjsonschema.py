@@ -4,6 +4,7 @@ import io
 from graphs import Node, Graph
 from basestructures import BaseStructures
 from jsontools import JSONTool
+from patternmatcher import PatternMatcher
 
 # This will information to nodes of a graph
 def annotateNodes(node, dedict, jt):
@@ -37,6 +38,7 @@ if __name__ == "__main__":
         bs = BaseStructures()
         gtool = Graph()
         jtool = JSONTool()
+        jtool.setPatternMatcher(PatternMatcher())
     
         sgraf = bs.readSerialisedGraph(filename)
         dedict = bs.getDEDict(defilename)
