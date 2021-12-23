@@ -19,9 +19,10 @@ class TestPatternMatcher(unittest.TestCase):
         tests['n12']     = [['type', 'integer'], ['minimum', 100000000000], ['maximum', 999999999999]]
         tests['n6,2']    = [['type', 'number'], ['minimum', 1000], ['maximum', 999999], ['multipleOf', 0.01]]
         tests['n9,6']    = [['type', 'number'], ['minimum', 100], ['maximum', 999999999], ['multipleOf', 0.000001]]
-        tests['n..3']   = [['type', 'string'], ['pattern', '^\d{0,3}$']]
-        tests['n..16']   = [['type', 'string'], ['pattern', '^\d{0,16}$']]
-        tests['n..12,5'] = [['type', 'string'], ['pattern', '^(?:\d{1,12}|\d{1,7},\d{1,5})?$']]
+        tests['n..3']   = [['type', 'integer'], ['minimum', 0], ['maximum', 999]]
+        tests['n..16']   = [['type', 'integer'], ['minimum', 0], ['maximum', 9999999999999999]]
+        tests['n..2,1'] = [['type', 'number'], ['minimum', 0], ['maximum', 99], ['multipleOf', 0.1]]
+        tests['n..12,5'] = [['type', 'number'], ['minimum', 0], ['maximum', 999999999999], ['multipleOf', 0.00001]]
         tests['   ']     = []
         tests['']        = []
 
@@ -70,16 +71,12 @@ class TestPatternMatcher(unittest.TestCase):
 
         for i in range(0,1000):
             sample = int(pm.generateSample('n..2'))
-            if sample == '':            # This pattern allows for empty value.
-                continue
             self.assertTrue(sample >= 0)
             self.assertTrue(sample <= 99)
 
         for i in range(0, 1000):
             sample = float(pm.generateSample('n..9,4'))
-            if sample == '':            # This pattern allows for empty value.
-                continue
-            self.assertTrue(sample >= 10000.00)
+            self.assertTrue(sample >= 0.0)
             self.assertTrue(sample <= 999999999.00)
 
 if __name__ == '__main__':

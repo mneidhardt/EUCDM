@@ -69,31 +69,35 @@ class PatternMatcher():
 
         match = self.patterns[4].match(format)  # e.g. "n6".
         if match:
-            min = int(pow(10, int(match.group(1))-1))
-            max = int(pow(10, int(match.group(1)))-1)
+            size = int(match.group(1))
+            min = pow(10, size-1)
+            max = pow(10, size)-1
             return [['type', 'integer'], ['minimum', min], ['maximum', max]]
 
         match = self.patterns[5].match(format)  # e.g. "n6,2".
         if match:
             size1 = int(match.group(1)) # Size of the whole expression.
             size2 = int(match.group(2)) # Size of the decimals part.
-            decimals = float(pow(10, -1*size2))
-            max = pow(10, size1) - 1
+            decimals = pow(10, -1*size2)
             min = pow(10, size1-size2-1)
+            max = pow(10, size1)-1
             return [['type', 'number'], ['minimum', min], ['maximum', max], ['multipleOf', decimals]]
 
         match = self.patterns[6].match(format)  # e.g. "n..8".
         if match:
-            pattern = '^\d{0,' + match.group(1) + '}$'
-            return [['type', 'string'], ['pattern', pattern]]
+            size = int(match.group(1)) # Size of the whole expression.
+            min = 0
+            max = pow(10, size)-1
+            return [['type', 'integer'], ['minimum', min], ['maximum', max]]
 
         match = self.patterns[7].match(format)  # e.g. "n..12.2".
         if match:
             size1 = int(match.group(1)) # Size of the whole expression.
             size2 = int(match.group(2)) # Size of the decimals part.
-            netsize1 = size1-size2
-            pattern = '^(?:\d{1,' + str(size1) + '}|\d{1,' + str(netsize1) + '},\d{1,' + str(size2) + '})?$'
-            return [['type', 'string'], ['pattern', pattern]]
+            decimals = pow(10, -1*size2)
+            min = 0.0
+            max = pow(10, size1)-1
+            return [['type', 'number'], ['minimum', min], ['maximum', max], ['multipleOf', decimals]]
 
         match = self.patterns[8].match(format)
         if match:
