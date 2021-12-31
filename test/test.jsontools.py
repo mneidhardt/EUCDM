@@ -73,7 +73,24 @@ class TestJSONTool(unittest.TestCase):
         self.assertTrue(schema[name]['items']['additionalProperties'] is False)
         self.assertTrue(childname in schema[name]['items']['properties'])
 
-        # print(json.dumps(schema, indent=4))
+        key = '04 01'
+        cardinality = 1
+        name = 'Declaration'
+        root = Node(key, cardinality, name, None)
+        childkey = '04 02'
+        childcardinality = 1
+        childname = 'LRN'
+        childformat = 'n10'
+        root.addChild(Node(childkey, childcardinality, childname, childformat))
+        schema = {}
+        jt.buildJSONSchema(root, schema)
+        self.assertTrue(name in schema)
+        self.assertTrue(schema[name]['description'].startswith(key))
+        self.assertTrue(schema[name]['type'] == 'object')
+        self.assertTrue(childname in schema[name]['properties'])
+        self.assertTrue(schema[name]['properties'][childname]['type'] == 'integer')
+
+        #print(json.dumps(schema, indent=4))
 
 
 

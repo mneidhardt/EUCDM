@@ -88,7 +88,6 @@ class JSONTool():
                     json.append(self.pm.generateSample(node.getFormat()))
                 return json
             else:
-                # return '[' + node.getName() + '/' + node.getFormat() + ']'# TODO: return a realistic value following the format.
                 return self.pm.generateSample(node.getFormat())
         else:
             if node.getCardinality() > 1:
