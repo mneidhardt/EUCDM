@@ -1,32 +1,13 @@
 import unittest
 import sys
 import os
+import json
 sys.path.append(os.getcwd() + '/..')
 from jsontools import JSONTool
+from graphs import Node
+from patternmatcher import PatternMatcher
 
 class TestJSONTool(unittest.TestCase):
-    def test_parseFormat(self):
-        jt = JSONTool()
-
-        formats = ['', '   ', 'a1', 'an18', 'a..3', 'an..512', 'n..12,5', 'n..16', 'n1', 'n2', 'n3', 'n12,2']
-        results = [
-                    [],
-                    [],
-                    [['type', 'string'], ['pattern', '^[a-åA-Å]{1}$']],
-                    [['type', 'string'], ['pattern', '^[a-åA-Å0-9]{18}$']],
-                    [['type', 'string'], ['pattern', '^[a-åA-Å]{0,3}$']],
-                    [['type', 'string'], ['pattern', '^[a-åA-Å0-9]{0,512}$']],
-                    [['type', 'number'], ['minimum', 0], ['maximum', 9999999], ['multipleOf', 1e-05]],
-                    [['type', 'integer'], ['minimum', 0], ['maximum', 9999999999999999]],
-                    [['type', 'integer'], ['minimum', 0], ['maximum', 9]],
-                    [['type', 'integer'], ['minimum', 0], ['maximum', 99]],
-                    [['type', 'integer'], ['minimum', 0], ['maximum', 999]],
-                    [['type', 'number'], ['minimum', 9999999999], ['maximum', 9999999999], ['multipleOf', 0.01]]
-                    ]
-
-        for i in range(0, len(formats)):
-            res = jt.parseFormat(formats[i])
-            self.assertEqual(results[i], res)
 
     def test_convertName(self):
         strings = ['Hi stranger', 'So you thought it was over, huh?', 'noNeed', '', ' ', 'Reference Number/UCR']
@@ -37,6 +18,63 @@ class TestJSONTool(unittest.TestCase):
         for i in range(0, len(strings)):
             cc = jt.convertName(strings[i])
             self.assertEqual(results[i], cc)
+
+    def test_buildJSONSchema(self):
+        jt = JSONTool()
+        jt.setPatternMatcher(PatternMatcher())
+
+        key = '01 01'
+        cardinality = 1
+        name = 'Declaration'
+        format = 'an10'
+        root = Node(key, cardinality, name, format)
+        schema = {}
+        jt.buildJSONSchema(root, schema)
+        self.assertTrue(name in schema)
+        self.assertTrue(schema[name]['description'].startswith(key))
+        self.assertTrue(schema[name]['type'] == 'string')
+        self.assertTrue(schema[name]['pattern'] == '^[a-åA-Å0-9]{10}$')
+
+        key = '02 01'
+        cardinality = 9
+        name = 'Declaration'
+        format = 'a6'
+        root = Node(key, cardinality, name, format)
+        schema = {}
+        jt.buildJSONSchema(root, schema)
+        self.assertTrue(name in schema)
+        self.assertTrue(schema[name]['description'].startswith(key))
+        self.assertTrue(schema[name]['type'] == 'array')
+        self.assertTrue(schema[name]['maxItems'] == cardinality)
+        self.assertTrue('items' in schema[name])
+        self.assertTrue(schema[name]['items']['type'] == 'string')
+        self.assertTrue(schema[name]['items']['pattern'] == '^[a-åA-Å]{6}$')
+
+        key = '03 01'
+        cardinality = 9
+        name = 'Declaration'
+        root = Node(key, cardinality, name, None)
+        childkey = '03 02'
+        childcardinality = 2
+        childname = 'LRN'
+        childformat = 'n10'
+        root.addChild(Node(childkey, childcardinality, childname, childformat))
+        schema = {}
+        jt.buildJSONSchema(root, schema)
+        self.assertTrue(name in schema)
+        self.assertTrue(schema[name]['description'].startswith(key))
+        self.assertTrue(schema[name]['type'] == 'array')
+        self.assertTrue(schema[name]['maxItems'] == cardinality)
+        self.assertTrue('items' in schema[name])
+        self.assertTrue('type' in schema[name]['items'])
+        self.assertTrue('additionalProperties' in schema[name]['items'])
+        self.assertTrue('properties' in schema[name]['items'])
+        self.assertTrue(schema[name]['items']['type'] == 'object')
+        self.assertTrue(schema[name]['items']['additionalProperties'] is False)
+        self.assertTrue(childname in schema[name]['items']['properties'])
+
+        # print(json.dumps(schema, indent=4))
+
 
 
 if __name__ == '__main__':
