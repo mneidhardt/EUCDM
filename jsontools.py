@@ -79,7 +79,6 @@ class JSONTool():
         nodename = self.convertName(node.getName())
 
         if node.getFormat():   # if there is a format, this is not an object.
-            # restrictions = self.parseFormat(node.getFormat())
             restrictions = self.pm.getRestrictions(node.getFormat())
 
             if node.getCardinality() > 1:
@@ -107,7 +106,7 @@ class JSONTool():
     def baseSchema(self, version):
         version = [str(e) for e in version] # Convert version numbers to strings.
         result = {}
-        result['$schema'] = 'https://json-schema.org/draft/2019-09/schema'
+        result['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
         result['schemaVersion'] = '.'.join(version) # e.g. '2.1.0'
         result['title'] = 'Declaration'
         result['description'] = 'Created ' + datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
