@@ -46,7 +46,7 @@ if __name__ == "__main__":
         annotateNodes(graf, dedict, jtool)
         gtool.showGraph(graf)
         schema = {}
-        jtool.buildJSONSchema(graf, schema)
+        schema[jtool.convertName(graf.getName())] = jtool.buildJSONSchema(graf)
         version = [2,2,0]
         result = jtool.baseSchema(version)
         convertedname = jtool.convertName(graf.getName())   # This is the name of the root node.
@@ -56,5 +56,7 @@ if __name__ == "__main__":
         with io.open(schemafilename, 'w', encoding='utf8') as fh:
             fh.write(jtool.dumps(result))
 
-    except (IndexError, ValueError, NameError):
+    #except (IndexError, ValueError, NameError):
+    except Error as err:
+        print(str(err))
         print(syntax(','.join(legalcolumns)))

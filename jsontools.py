@@ -27,28 +27,28 @@ class JSONTool():
     def convertName(self, name):
         return name.replace(' ', '_')
 
-    def buildJSONSchema(self, node, result):
-        nodename = self.convertName(node.getName())
-        json = {}
-
+    def buildJSONSchema(self, node):
         if node.getFormat():   # if there is a format, this is not an object.
             restrictions = self.pm.getRestrictions(node.getFormat())
 
             if node.getCardinality() > 1:
+                json = {}
                 json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
                 json['type'] = 'array'
                 json['maxItems'] = node.getCardinality()
                 json['items'] = {}
                 for r in restrictions:
                     json['items'][r[0]] = r[1]
-                result[nodename] = json
+                return json
             else:
+                json = {}
                 json['description'] = str(node.getKey()) + '. EUCDM format=' + node.getFormat()
                 for r in restrictions:
                     json[r[0]] = r[1]
-                result[nodename] = json
+                return json
         else:
             if node.getCardinality() > 1:
+                json = {}
                 json['description'] = str(node.getKey())
                 json['type'] = 'array'
                 json['maxItems'] = node.getCardinality()
@@ -57,27 +57,26 @@ class JSONTool():
                 json['items']['type'] = 'object'
                 json['items']['additionalProperties'] = False
                 json['items']['properties'] = {}
-                result[nodename] = json
                 for kid in node.getChildren():
-                    self.buildJSONSchema(kid, result[nodename]['items']['properties'])
+                    json['items']['properties'][self.convertName(kid.getName())] =  self.buildJSONSchema(kid)
                     if 'required' not in json['items']:
                         json['items']['required'] = []
                     json['items']['required'].append(self.convertName(kid.getName()))
+                return json
             else:
+                json = {}
                 json['description'] = str(node.getKey())
                 json['type'] = 'object'
                 json['additionalProperties'] = False
                 json['properties'] = {}
-                result[nodename] = json
                 for kid in node.getChildren():
-                    self.buildJSONSchema(kid, result[nodename]['properties'])
+                    json['properties'][self.convertName(kid.getName())] =  self.buildJSONSchema(kid)
                     if 'required' not in json:
                         json['required'] = []
                     json['required'].append(self.convertName(kid.getName()))
+                return json
         
     def buildJSONInstance(self, node):
-        nodename = self.convertName(node.getName())
-
         if node.getFormat():   # if there is a format, this is not an object.
             restrictions = self.pm.getRestrictions(node.getFormat())
 

@@ -29,7 +29,7 @@ class TestJSONTool(unittest.TestCase):
         format = 'an10'
         root = Node(key, cardinality, name, format)
         schema = {}
-        jt.buildJSONSchema(root, schema)
+        schema[jt.convertName(root.getName())] = jt.buildJSONSchema(root)
         self.assertTrue(name in schema)
         self.assertTrue(schema[name]['description'].startswith(key))
         self.assertTrue(schema[name]['type'] == 'string')
@@ -41,7 +41,7 @@ class TestJSONTool(unittest.TestCase):
         format = 'a6'
         root = Node(key, cardinality, name, format)
         schema = {}
-        jt.buildJSONSchema(root, schema)
+        schema[jt.convertName(root.getName())] = jt.buildJSONSchema(root)
         self.assertTrue(name in schema)
         self.assertTrue(schema[name]['description'].startswith(key))
         self.assertTrue(schema[name]['type'] == 'array')
@@ -60,7 +60,7 @@ class TestJSONTool(unittest.TestCase):
         childformat = 'n10'
         root.addChild(Node(childkey, childcardinality, childname, childformat))
         schema = {}
-        jt.buildJSONSchema(root, schema)
+        schema[jt.convertName(root.getName())] = jt.buildJSONSchema(root)
         self.assertTrue(name in schema)
         self.assertTrue(schema[name]['description'].startswith(key))
         self.assertTrue(schema[name]['type'] == 'array')
@@ -83,7 +83,7 @@ class TestJSONTool(unittest.TestCase):
         childformat = 'n10'
         root.addChild(Node(childkey, childcardinality, childname, childformat))
         schema = {}
-        jt.buildJSONSchema(root, schema)
+        schema[jt.convertName(root.getName())] = jt.buildJSONSchema(root)
         self.assertTrue(name in schema)
         self.assertTrue(schema[name]['description'].startswith(key))
         self.assertTrue(schema[name]['type'] == 'object')
