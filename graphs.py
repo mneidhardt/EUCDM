@@ -126,25 +126,5 @@ class Graph():
                 if kid not in visitedSet:
                     visitedSet.add(kid)
                     queue.append(kid)
-        return result
-
-    # Build json schema using BFS.
-    def bfs2(self, vertex):
-        visitedSet = set()
-        queue = []
-        visitedSet.add(vertex)
-        queue.append(vertex)
-
-        result = {}
-        while queue:
-            v = queue[0]
-            result[v.getKey()] = {}
-            if v.getCardinality() > 1:
-                result[v.getKey()]["type"] = "array"
-            queue = queue[1:]
-            for kid in v.getChildren():
-                if kid not in visitedSet:
-                    result[v.getKey()][kid.getKey()] = { 'type' : 'object' }
-                    visitedSet.add(kid)
-                    queue.append(kid)
+            print(v.getKey(), len(v.getChildren()))
         return result
