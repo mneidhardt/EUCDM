@@ -1,10 +1,11 @@
 import sys
 import datetime
 import io
-from graphs import Node, Graph
-from basestructures import BaseStructures
-from jsontools import JSONTool
-from patternmatcher import PatternMatcher
+sys.path.insert(1, '/Users/mine/kode/python')
+from mytools.graph.graphs import EUCDMNode, Graph
+from mytools.eucdm.basestructures import BaseStructures
+from mytools.json.jsontools import JSONTool
+from mytools.eucdm.patternmatcher import PatternMatcher
 
 # This will information to nodes of a graph
 def annotateNodes(node, dedict, jt):
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         with io.open(schemafilename, 'w', encoding='utf8') as fh:
             fh.write(jtool.dumps(result))
 
-    #except (IndexError, ValueError, NameError):
-    except Error as err:
+    except (IndexError, ValueError, NameError):
+    #except Error as err:
         print(str(err))
         print(syntax(','.join(legalcolumns)))
