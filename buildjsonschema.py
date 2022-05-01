@@ -4,8 +4,29 @@ import io
 sys.path.insert(1, '/Users/mine/kode/python')
 from mytools.graph.graphs import EUCDMNode, Graph
 from mytools.eucdm.basestructures import BaseStructures
-from mytools.json.jsontools import JSONTool
+from mytools.json.jsontools import EUCDMJSONTool
 from mytools.eucdm.patternmatcher import PatternMatcher
+
+def baseSchema(version):
+    version = [str(e) for e in version] # Convert version numbers to strings.
+    result = {}
+    result['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
+    result['schemaVersion'] = '.'.join(version) # e.g. '2.1.0'
+    result['title'] = 'Declaration'
+    result['description'] = 'Created ' + datetime.datetime.now().strftime("%Y-%m-%dT%H:%M")
+    result['type'] = 'object'
+    result['additionalProperties'] = False
+    result['properties'] = {}
+    result['properties']['schemaVersion'] = {}
+    result['properties']['schemaVersion']['pattern'] = '^' + version[0] + '[.][0-9]+[.][0-9]+$'
+    result['properties']['schemaVersion']['type'] = 'string'
+    result['properties']['procedureCategory'] = {}      # The current key for what EUCDM calls 'column'. May be changed to 'column'.
+    result['properties']['procedureCategory']['type'] = 'string';
+    result['properties']['procedureCategory']['maxLength'] = 3;
+    #result['properties']['column']['type'] = 'string'
+    #result['properties']['column']['enum'] = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'I1', 'I2']
+
+    return result
 
 # This will information to nodes of a graph
 def annotateNodes(node, dedict, jt):
@@ -38,7 +59,7 @@ if __name__ == "__main__":
 
         bs = BaseStructures()
         gtool = Graph()
-        jtool = JSONTool()
+        jtool = EUCDMJSONTool()
         jtool.setPatternMatcher(PatternMatcher())
     
         sgraf = bs.readSerialisedGraph(filename)
@@ -49,7 +70,7 @@ if __name__ == "__main__":
         schema = {}
         schema[jtool.convertName(graf.getName())] = jtool.buildJSONSchema(graf)
         version = [2,2,0]
-        result = jtool.baseSchema(version)
+        result = baseSchema(version)
         convertedname = jtool.convertName(graf.getName())   # This is the name of the root node.
         result['properties'][convertedname] = schema[convertedname]
     

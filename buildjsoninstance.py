@@ -4,13 +4,8 @@ import io
 sys.path.insert(1, '/Users/mine/kode/python')
 from mytools.graph.graphs import EUCDMNode, Graph
 from mytools.eucdm.basestructures import BaseStructures
-from mytools.json.jsontools import JSONTool
+from mytools.json.jsontools import EUCDMJSONTool
 from mytools.eucdm.patternmatcher import PatternMatcher
-
-#from graphs import Node, Graph
-#from basestructures import BaseStructures
-#from jsontools import JSONTool
-#from patternmatcher import PatternMatcher
 
 # This will information to nodes of a graph
 def annotateNodes(node, dedict, jt):
@@ -43,7 +38,7 @@ if __name__ == "__main__":
 
         bs = BaseStructures()
         gtool = Graph()
-        jtool = JSONTool()
+        jtool = EUCDMJSONTool()
         jtool.setPatternMatcher(PatternMatcher())
     
         sgraf = bs.readSerialisedGraph(filename)
